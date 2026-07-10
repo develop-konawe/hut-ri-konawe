@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html class="light" lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title', 'Konawe 81st Independence')</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#be0017',
+                        'primary-container': '#e62129',
+                        secondary: '#515d84',
+                        'secondary-container': '#c4d0fd',
+                        tertiary: '#735c00',
+                        'tertiary-container': '#cca730',
+                        background: '#f8f9fa',
+                        surface: '#f8f9fa',
+                        'surface-container': '#edeeef',
+                        'surface-container-low': '#f3f4f5',
+                        'surface-container-lowest': '#ffffff',
+                        'surface-container-high': '#e7e8e9',
+                        'surface-container-highest': '#e1e3e4',
+                        'outline-variant': '#e7bdb8',
+                        'on-background': '#191c1d',
+                        'on-surface-variant': '#5d3f3c',
+                        'on-primary-container': '#ffffff',
+                    },
+                    spacing: {'container-max': '1280px', gutter: '1.5rem', 'section-gap': '5rem'},
+                    fontFamily: {
+                        body: ['Inter'],
+                        headline: ['Montserrat'],
+                        'body-md': ['Inter'],
+                        'headline-md': ['Montserrat'],
+                        'label-bold': ['Inter'],
+                    },
+                    fontSize: {
+                        'body-md': ['16px', {lineHeight: '1.6', fontWeight: '400'}],
+                        'headline-md': ['24px', {lineHeight: '1.3', fontWeight: '600'}],
+                        'label-bold': ['14px', {lineHeight: '1.2', fontWeight: '600'}],
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-float{animation:float 3s ease-in-out infinite}
+        .glass-panel{background:rgba(255,255,255,.68);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.2);box-shadow:0 8px 32px rgba(81,93,132,.06)}
+        .mosehe-pattern{background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l30 30-30 30L0 30z' fill='%23be0017' fill-opacity='0.03'/%3E%3C/svg%3E")}
+        .merah-semangat-gradient{background:linear-gradient(135deg,#be0017 0%,#93000f 100%)}
+    </style>
+    @stack('styles')
+</head>
+<body class="bg-background text-on-background mosehe-pattern font-body min-h-screen">
+<header class="bg-surface/80 backdrop-blur-md sticky top-0 z-50 border-b border-outline-variant/30 shadow-sm">
+    <div class="flex justify-between items-center w-full px-gutter max-w-container-max mx-auto h-16 md:h-20">
+        <a href="{{ route('visitor.home') }}" class="flex items-center gap-3 text-primary">
+            <img class="h-11 w-11 object-contain" src="{{ asset('assets/logo/hutri81-symbol.png') }}" alt="Logo HUT RI 81">
+            <span class="font-headline font-bold text-xl md:text-2xl">Konawe 81st Independence</span>
+        </a>
+        <nav class="hidden md:flex gap-7 items-center text-sm font-semibold">
+            <a class="{{ request()->routeIs('visitor.home') ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary' }} py-6" href="{{ route('visitor.home') }}">Beranda</a>
+            <a class="{{ request()->routeIs('visitor.news') ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary' }} py-6" href="{{ route('visitor.news') }}">Berita</a>
+            <a class="{{ request()->routeIs('visitor.competitions') ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary' }} py-6" href="{{ route('visitor.competitions') }}">Lomba</a>
+            <a class="{{ request()->routeIs('visitor.locations') ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary' }} py-6" href="{{ route('visitor.locations') }}">Peta</a>
+            <a class="bg-primary-container text-white px-4 py-2 rounded-full shadow" href="{{ route('visitor.registration.create') }}">Daftar</a>
+        </nav>
+    </div>
+</header>
+
+@if (session('status'))
+    <div class="max-w-container-max mx-auto px-gutter pt-6">
+        <div class="glass-panel rounded-2xl p-4 text-primary font-semibold">{{ session('status') }}</div>
+    </div>
+@endif
+
+<main>
+    @yield('content')
+</main>
+
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-surface-container-lowest/90 backdrop-blur-xl md:hidden h-16 flex justify-around items-center rounded-t-xl shadow-[0_-4px_20px_rgba(81,93,132,0.1)] px-4">
+    <a class="flex flex-col items-center justify-center {{ request()->routeIs('visitor.home') ? 'bg-primary-container text-on-primary-container rounded-full px-4 py-1' : 'text-secondary hover:scale-110' }} transition-all duration-200" href="{{ route('visitor.home') }}">
+        <span class="material-symbols-outlined" @if(request()->routeIs('visitor.home')) style="font-variation-settings: 'FILL' 1;" @endif>home</span>
+        <span class="text-[10px] font-label-bold">Beranda</span>
+    </a>
+    <a class="flex flex-col items-center justify-center {{ request()->routeIs('visitor.news') ? 'bg-primary-container text-on-primary-container rounded-full px-4 py-1' : 'text-secondary hover:scale-110' }} transition-all duration-200" href="{{ route('visitor.news') }}">
+        <span class="material-symbols-outlined">newspaper</span>
+        <span class="text-[10px] font-label-bold">Berita</span>
+    </a>
+    <a class="flex flex-col items-center justify-center {{ request()->routeIs('visitor.competitions') ? 'bg-primary-container text-on-primary-container rounded-full px-4 py-1' : 'text-secondary hover:scale-110' }} transition-all duration-200" href="{{ route('visitor.competitions') }}">
+        <span class="material-symbols-outlined">event_note</span>
+        <span class="text-[10px] font-label-bold">Lomba</span>
+    </a>
+    <a class="flex flex-col items-center justify-center {{ request()->routeIs('visitor.locations') ? 'bg-primary-container text-on-primary-container rounded-full px-4 py-1' : 'text-secondary hover:scale-110' }} transition-all duration-200" href="{{ route('visitor.locations') }}">
+        <span class="material-symbols-outlined">map</span>
+        <span class="text-[10px] font-label-bold">Peta</span>
+    </a>
+</nav>
+
+<footer class="bg-surface-container-high border-t border-outline-variant/50 w-full py-12 px-gutter mt-section-gap relative pb-24 md:pb-12">
+    <div class="max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-start gap-12">
+        <div class="max-w-md">
+            <h2 class="text-headline-md font-headline-md font-extrabold text-primary mb-4">KONAWE 81</h2>
+            <p class="text-body-md font-body-md text-on-surface-variant mb-6 leading-relaxed">
+                Pemerintah Kabupaten Konawe berkomitmen untuk terus memajukan kesejahteraan masyarakat dan melestarikan budaya luhur daerah dalam semangat kemerdekaan Republik Indonesia.
+            </p>
+            <div class="flex gap-4">
+                <a class="text-primary hover:scale-110 transition-transform" href="#" aria-label="Bagikan"><span class="material-symbols-outlined">share</span></a>
+                <a class="text-primary hover:scale-110 transition-transform" href="#" aria-label="Portal bahasa"><span class="material-symbols-outlined">language</span></a>
+                <a class="text-primary hover:scale-110 transition-transform" href="mailto:admin@konawe81.id" aria-label="Email"><span class="material-symbols-outlined">mail</span></a>
+            </div>
+        </div>
+        <div class="grid grid-cols-2 gap-12">
+            <div class="flex flex-col gap-4">
+                <span class="font-label-bold text-label-bold text-primary">Tautan Resmi</span>
+                <a class="text-on-surface-variant hover:text-primary transition-colors text-body-md" href="{{ route('visitor.news') }}">Berita & Pengumuman</a>
+                <a class="text-on-surface-variant hover:text-primary transition-colors text-body-md" href="{{ route('visitor.registration.create') }}">Pendaftaran Lomba</a>
+                <a class="text-on-surface-variant hover:text-primary transition-colors text-body-md" href="{{ route('login') }}">Panel Admin</a>
+            </div>
+            <div class="flex flex-col gap-4">
+                <span class="font-label-bold text-label-bold text-primary">Kantor</span>
+                <p class="text-on-surface-variant text-body-md">Jl. Inolobunggadue No. 1, Unaaha, Konawe, Sulawesi Tenggara</p>
+            </div>
+        </div>
+    </div>
+    <div class="max-w-container-max mx-auto mt-12 pt-8 border-t border-outline-variant/30 text-center md:text-left">
+        <p class="text-body-md font-body-md text-on-surface-variant opacity-80">
+            &copy; 2026 Pemerintah Kabupaten Konawe. Dirgahayu Republik Indonesia ke-81.
+        </p>
+    </div>
+</footer>
+@stack('scripts')
+</body>
+</html>
