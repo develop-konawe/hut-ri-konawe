@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Application\Content;
+namespace App\Services;
 
-use App\Domain\Content\Contracts\NewsGateway;
+use App\Repositories\Contracts\NewsRepositoryInterface;
 use Illuminate\Support\Collection;
 
-final readonly class ListNews
+final readonly class NewsService
 {
-    public function __construct(private NewsGateway $newsGateway)
+    public function __construct(private NewsRepositoryInterface $newsRepository)
     {
     }
 
     public function sports(array $filters = []): Collection
     {
-        return $this->newsGateway->berita($filters + [
+        return $this->newsRepository->berita($filters + [
             'category' => 'olahraga',
             'per_page' => 6,
         ]);
@@ -21,7 +21,7 @@ final readonly class ListNews
 
     public function announcements(array $filters = []): Collection
     {
-        return $this->newsGateway->pengumuman($filters + [
+        return $this->newsRepository->pengumuman($filters + [
             'per_page' => 6,
         ]);
     }

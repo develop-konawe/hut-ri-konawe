@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Application\Registration;
+namespace App\Services;
 
 use App\Models\Competition;
 use App\Models\Registration;
 use Illuminate\Support\Carbon;
 use RuntimeException;
 
-final class RegisterParticipant
+final class RegistrationService
 {
-    public function handle(Competition $competition, array $data): Registration
+    public function register(Competition $competition, array $data): Registration
     {
         if (! $competition->is_open) {
             throw new RuntimeException('Pendaftaran lomba sudah ditutup.');

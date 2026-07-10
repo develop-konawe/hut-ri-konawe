@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use App\Domain\Content\Contracts\NewsGateway;
-use App\Infrastructure\Konawe\KonaweNewsApi;
+use App\Repositories\Contracts\NewsRepositoryInterface;
+use App\Repositories\KonaweNewsRepository;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +13,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(NewsGateway::class, KonaweNewsApi::class);
+        $this->app->bind(NewsRepositoryInterface::class, KonaweNewsRepository::class);
     }
 
     /**

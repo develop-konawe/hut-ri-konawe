@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Visitor;
 
-use App\Application\Registration\RegisterParticipant;
 use App\Http\Controllers\Controller;
 use App\Models\Competition;
+use App\Services\RegistrationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -20,7 +20,7 @@ class RegistrationController extends Controller
         ]);
     }
 
-    public function store(Request $request, RegisterParticipant $registerParticipant): RedirectResponse
+    public function store(Request $request, RegistrationService $registrationService): RedirectResponse
     {
         $validated = $request->validate([
             'competition_id' => ['required', 'exists:competitions,id'],
@@ -36,7 +36,7 @@ class RegistrationController extends Controller
         unset($validated['competition_id']);
 
         try {
-            $registerParticipant->handle($competition, $validated);
+            $registrationService->register($competition, $validated);
         } catch (RuntimeException $exception) {
             return back()->withInput()->withErrors(['competition_id' => $exception->getMessage()]);
         }

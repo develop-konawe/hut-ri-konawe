@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Content\Data;
+namespace App\Data;
 
 final readonly class NewsItem
 {

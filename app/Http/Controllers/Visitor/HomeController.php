@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Visitor;
 
-use App\Application\Portal\GetVisitorHomeData;
 use App\Http\Controllers\Controller;
 use App\Models\ActivityLocation;
 use App\Models\Competition;
 use App\Models\IndependenceVideo;
+use App\Services\HomePageService;
 use Illuminate\Contracts\View\View;
 
 class HomeController extends Controller
 {
-    public function __invoke(GetVisitorHomeData $homeData): View
+    public function __invoke(HomePageService $homePageService): View
     {
-        return view('visitor.home', $homeData->handle());
+        return view('visitor.home', $homePageService->getData());
     }
 
     public function competitions(): View

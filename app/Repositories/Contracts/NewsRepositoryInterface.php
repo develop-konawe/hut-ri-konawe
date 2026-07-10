@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Domain\Content\Contracts;
+namespace App\Repositories\Contracts;
 
 use Illuminate\Support\Collection;
 
-interface NewsGateway
+interface NewsRepositoryInterface
 {
     public function berita(array $filters = []): Collection;
 

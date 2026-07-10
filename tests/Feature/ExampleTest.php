@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Domain\Content\Contracts\NewsGateway;
+use App\Repositories\Contracts\NewsRepositoryInterface;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Tests\TestCase;
@@ -27,7 +27,7 @@ class ExampleTest extends TestCase
             ]),
         ]);
 
-        $items = app(NewsGateway::class)->berita(['category' => 'olahraga']);
+        $items = app(NewsRepositoryInterface::class)->berita(['category' => 'olahraga']);
 
         $this->assertCount(1, $items);
         $this->assertSame('Turnamen Sepak Bola HUT RI Dibuka', $items->first()->title);

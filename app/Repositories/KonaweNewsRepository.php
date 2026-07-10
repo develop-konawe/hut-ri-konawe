@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Infrastructure\Konawe;
+namespace App\Repositories;
 
-use App\Domain\Content\Contracts\NewsGateway;
-use App\Domain\Content\Data\NewsItem;
+use App\Data\NewsItem;
+use App\Repositories\Contracts\NewsRepositoryInterface;
 use Illuminate\Http\Client\Factory as HttpFactory;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Throwable;
 
-final class KonaweNewsApi implements NewsGateway
+final class KonaweNewsRepository implements NewsRepositoryInterface
 {
     public function __construct(private readonly HttpFactory $http)
     {
