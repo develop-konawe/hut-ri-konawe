@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Registration extends Model
 {
+    public const STATUS_SUBMITTED = 'submitted';
+    public const STATUS_VERIFIED = 'verified';
+    public const STATUS_REJECTED = 'rejected';
+    public const STATUS_CANCELLED = 'cancelled';
+
     protected $fillable = [
         'competition_id',
         'participant_name',
@@ -29,5 +34,20 @@ class Registration extends Model
     public function competition(): BelongsTo
     {
         return $this->belongsTo(Competition::class);
+    }
+
+    public static function statuses(): array
+    {
+        return [
+            self::STATUS_SUBMITTED => 'Baru Masuk',
+            self::STATUS_VERIFIED => 'Terverifikasi',
+            self::STATUS_REJECTED => 'Ditolak',
+            self::STATUS_CANCELLED => 'Dibatalkan',
+        ];
+    }
+
+    public function statusLabel(): string
+    {
+        return self::statuses()[$this->status] ?? ucfirst($this->status);
     }
 }

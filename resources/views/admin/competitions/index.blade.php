@@ -29,7 +29,11 @@
                 <td class="py-4">{{ $competition->category }}</td>
                 <td class="py-4">{{ $competition->starts_at->format('d/m/Y H:i') }}</td>
                 <td class="py-4">{{ $competition->venue }}</td>
-                <td class="py-4">{{ $competition->registrations_count }}</td>
+                <td class="py-4">
+                    <a class="font-bold text-primary" href="{{ route('admin.registrations.index', ['competition_id' => $competition->id]) }}">
+                        {{ $competition->registrations_count }}
+                    </a>
+                </td>
                 <td class="py-4">{{ $competition->is_open ? 'Dibuka' : 'Ditutup' }}</td>
                 <td class="py-4 flex gap-3 justify-end">
                     <a class="text-primary font-bold" href="{{ route('admin.competitions.edit', $competition) }}">Edit</a>

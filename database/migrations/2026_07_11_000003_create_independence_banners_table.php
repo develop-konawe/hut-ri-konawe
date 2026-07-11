@@ -11,7 +11,7 @@ return new class extends Migration
     {
         Schema::create('independence_banners', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('title')->nullable();
             $table->string('media_url', 2048);
             $table->string('media_type', 20)->default('image');
             $table->text('description')->nullable();

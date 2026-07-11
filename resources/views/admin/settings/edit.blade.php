@@ -40,7 +40,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mt-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 mt-6">
                     <div class="rounded-2xl bg-white/70 border border-white/60 p-4">
                         <div class="h-20 flex items-center justify-center mb-4">
                             <img class="max-h-16 max-w-full object-contain" src="{{ $setting->headerKonaweLogoUrl() }}" alt="Logo Konawe saat ini">
@@ -66,6 +66,16 @@
                         <label class="font-bold text-sm" for="hero_logo">Logo Banner Utama</label>
                         <input id="hero_logo" type="file" name="hero_logo" accept=".png,.jpg,.jpeg,.webp,.svg" class="mt-2 w-full text-sm">
                         @error('hero_logo') <p class="text-primary text-sm mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div class="rounded-2xl bg-white/70 border border-white/60 p-4">
+                        <div class="h-20 overflow-hidden rounded-xl bg-surface-container-low mb-4">
+                            <img class="h-full w-full object-cover" src="{{ $setting->heroBackgroundUrl() }}" alt="Background section utama saat ini">
+                        </div>
+                        <label class="font-bold text-sm" for="hero_background">Background Section Utama</label>
+                        <input id="hero_background" type="file" name="hero_background" accept=".png,.jpg,.jpeg,.webp" class="mt-2 w-full text-sm">
+                        <p class="text-xs text-on-surface-variant mt-2">Disarankan rasio lebar seperti 16:9 atau foto landscape.</p>
+                        @error('hero_background') <p class="text-primary text-sm mt-1">{{ $message }}</p> @enderror
                     </div>
                 </div>
             </section>

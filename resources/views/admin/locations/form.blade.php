@@ -186,10 +186,30 @@
                 scrollWheelZoom: true,
             });
 
-            L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+            const googleHybrid = L.tileLayer('https://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+                maxZoom: 20,
+                subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+                attribution: '&copy; Google Hybrid',
+            });
+
+            const googleSatellite = L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
                 maxZoom: 20,
                 subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
                 attribution: '&copy; Google Satellite',
+            });
+
+            const streetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; OpenStreetMap contributors',
+            });
+
+            googleHybrid.addTo(map);
+            L.control.layers({
+                'Satelit + Nama Jalan': googleHybrid,
+                'Satelit Murni': googleSatellite,
+                'Peta Jalan': streetMap,
+            }, null, {
+                collapsed: true,
             }).addTo(map);
 
             const independenceIcon = L.divIcon({

@@ -13,6 +13,7 @@ class SiteSetting extends Model
     public const DEFAULT_HEADER_KONAWE_LOGO = 'assets/logo/logo_konawe.png';
     public const DEFAULT_HEADER_HUTRI_LOGO = 'assets/logo/hutri81-symbol.png';
     public const DEFAULT_HERO_LOGO = 'assets/logo/hutri81-full-red.png';
+    public const DEFAULT_HERO_BACKGROUND = 'https://lh3.googleusercontent.com/aida-public/AB6AXuBbxkqpb2m7rFOATPP79gh3y3y3APAgQkc-A8-BHbYWyphAIBU1aKFzF_q18ouDuPeFL5rAYR4hhSxMfpcDTdA6eW2midSQqR7JUu_X7XzKiwji1j9fCND0kGgz1iGsRgi7zxT_g1UDf8OhNepuzHsY0xWaMR6y6QaSuno6m3wz86EtLsvzAPjiXjxoSAkPgpQCWCdf9rDQDwmDJIZLV6Brua6veUiWsOvQfyBR_9wnxMvcGB0RFL8NUFt9rbVMABRVcDIaEPIgxmyr';
     public const REGISTRATION_OPEN = 'open';
     public const REGISTRATION_CLOSED = 'closed';
     public const REGISTRATION_HIDDEN = 'hidden';
@@ -26,6 +27,7 @@ class SiteSetting extends Model
         'header_konawe_logo_path',
         'header_hutri_logo_path',
         'hero_logo_path',
+        'hero_background_path',
     ];
 
     protected function casts(): array
@@ -131,6 +133,11 @@ class SiteSetting extends Model
     public function heroLogoUrl(): string
     {
         return asset($this->columnValue('hero_logo_path') ?: self::DEFAULT_HERO_LOGO);
+    }
+
+    public function heroBackgroundUrl(): string
+    {
+        return asset($this->columnValue('hero_background_path') ?: self::DEFAULT_HERO_BACKGROUND);
     }
 
     private function columnValue(string $column): ?string

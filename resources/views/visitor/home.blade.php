@@ -4,7 +4,7 @@
 
 @section('content')
 <section class="relative h-[540px] md:h-[680px] overflow-hidden flex items-center justify-center">
-    <img class="absolute inset-0 w-full h-full object-cover brightness-75" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbxkqpb2m7rFOATPP79gh3y3y3APAgQkc-A8-BHbYWyphAIBU1aKFzF_q18ouDuPeFL5rAYR4hhSxMfpcDTdA6eW2midSQqR7JUu_X7XzKiwji1j9fCND0kGgz1iGsRgi7zxT_g1UDf8OhNepuzHsY0xWaMR6y6QaSuno6m3wz86EtLsvzAPjiXjxoSAkPgpQCWCdf9rDQDwmDJIZLV6Brua6veUiWsOvQfyBR_9wnxMvcGB0RFL8NUFt9rbVMABRVcDIaEPIgxmyr" alt="Konawe Independence">
+    <img class="absolute inset-0 w-full h-full object-cover brightness-75" src="{{ $siteSetting->heroBackgroundUrl() }}" alt="Background HUT RI Konawe">
     <div class="relative z-10 w-full max-w-container-max px-gutter text-center flex flex-col items-center">
         <div class="glass-panel p-7 md:p-10 rounded-3xl max-w-2xl animate-float">
             <img class="mx-auto mb-6 h-28 md:h-40 object-contain drop-shadow-2xl" src="{{ $siteSetting->heroLogoUrl() }}" alt="Logo HUT RI 81 Indonesia Berdaulat Adil dan Makmur">

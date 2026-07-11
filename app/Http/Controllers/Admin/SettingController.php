@@ -29,6 +29,7 @@ class SettingController extends Controller
             'header_konawe_logo' => ['nullable', 'file', 'mimes:png,jpg,jpeg,webp,svg', 'max:2048'],
             'header_hutri_logo' => ['nullable', 'file', 'mimes:png,jpg,jpeg,webp,svg', 'max:2048'],
             'hero_logo' => ['nullable', 'file', 'mimes:png,jpg,jpeg,webp,svg', 'max:2048'],
+            'hero_background' => ['nullable', 'file', 'mimes:png,jpg,jpeg,webp', 'max:4096'],
         ]);
 
         $setting = SiteSetting::current();
@@ -45,9 +46,10 @@ class SettingController extends Controller
             'header_konawe_logo' => 'header_konawe_logo_path',
             'header_hutri_logo' => 'header_hutri_logo_path',
             'hero_logo' => 'hero_logo_path',
+            'hero_background' => 'hero_background_path',
         ] as $input => $column) {
             if ($request->hasFile($input)) {
-                $payload[$column] = $this->storeLogo($request->file($input));
+                $payload[$column] = $this->storeSettingFile($request->file($input));
             }
         }
 
@@ -56,7 +58,7 @@ class SettingController extends Controller
         return to_route('admin.settings.edit')->with('status', 'Pengaturan portal berhasil diperbarui.');
     }
 
-    private function storeLogo(UploadedFile $file): string
+    private function storeSettingFile(UploadedFile $file): string
     {
         $directory = public_path('uploads/settings');
 
