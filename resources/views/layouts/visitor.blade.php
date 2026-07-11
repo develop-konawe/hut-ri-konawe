@@ -126,9 +126,9 @@
                 Pemerintah Kabupaten Konawe berkomitmen untuk terus memajukan kesejahteraan masyarakat dan melestarikan budaya luhur daerah dalam semangat kemerdekaan Republik Indonesia.
             </p>
             <div class="flex gap-4">
-                <a class="text-primary hover:scale-110 transition-transform" href="#" aria-label="Bagikan"><span class="material-symbols-outlined">share</span></a>
-                <a class="text-primary hover:scale-110 transition-transform" href="#" aria-label="Portal bahasa"><span class="material-symbols-outlined">language</span></a>
-                <a class="text-primary hover:scale-110 transition-transform" href="mailto:admin@konawe81.id" aria-label="Email"><span class="material-symbols-outlined">mail</span></a>
+                <a class="text-primary hover:scale-110 transition-transform" href="https://api.whatsapp.com/send?text={{ rawurlencode($siteSetting->footerTitle().' - '.url()->current()) }}" target="_blank" rel="noopener" data-share-current-url aria-label="Bagikan halaman ini"><span class="material-symbols-outlined">share</span></a>
+                <a class="text-primary hover:scale-110 transition-transform" href="https://konawekab.go.id/" target="_blank" rel="noopener" aria-label="Website resmi Kabupaten Konawe"><span class="material-symbols-outlined">language</span></a>
+                <a class="text-primary hover:scale-110 transition-transform" href="mailto:diskominfo@konawekab.go.id" aria-label="Email Diskominfo Konawe"><span class="material-symbols-outlined">mail</span></a>
             </div>
         </div>
         <div class="grid grid-cols-2 gap-12">
@@ -154,5 +154,27 @@
     </div>
 </footer>
 @stack('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('[data-share-current-url]').forEach((shareLink) => {
+            shareLink.addEventListener('click', async (event) => {
+                if (! navigator.share) {
+                    return;
+                }
+
+                event.preventDefault();
+                try {
+                    await navigator.share({
+                        title: document.title,
+                        text: @js($siteSetting->footerTitle()),
+                        url: window.location.href,
+                    });
+                } catch (error) {
+                    // User cancelled the native share dialog.
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>
