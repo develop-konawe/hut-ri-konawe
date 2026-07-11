@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Konawe 81st Independence')</title>
+    <title>@yield('title', 'HUT RI ke-81 Kabupaten Konawe')</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <script>
@@ -62,15 +62,25 @@
 <header class="bg-surface/80 backdrop-blur-md sticky top-0 z-50 border-b border-outline-variant/30 shadow-sm">
     <div class="flex justify-between items-center w-full px-gutter max-w-container-max mx-auto h-16 md:h-20">
         <a href="{{ route('visitor.home') }}" class="flex items-center gap-3 text-primary">
-            <img class="h-11 w-11 object-contain" src="{{ asset('assets/logo/hutri81-symbol.png') }}" alt="Logo HUT RI 81">
-            <span class="font-headline font-bold text-xl md:text-2xl">Konawe 81st Independence</span>
+            <span class="flex items-center gap-2">
+                <span class="flex h-11 w-11 items-center justify-center">
+                    <img class="max-h-10 max-w-10 object-contain" src="{{ $siteSetting->headerKonaweLogoUrl() }}" alt="Logo Kabupaten Konawe">
+                </span>
+                <span class="flex h-11 w-11 items-center justify-center">
+                    <img class="max-h-11 max-w-11 object-contain" src="{{ $siteSetting->headerHutriLogoUrl() }}" alt="Logo HUT RI 81">
+                </span>
+            </span>
+            <span class="font-headline font-bold text-lg md:text-2xl leading-tight">{{ $siteSetting->headerTitle() }}</span>
         </a>
         <nav class="hidden md:flex gap-7 items-center text-sm font-semibold">
             <a class="{{ request()->routeIs('visitor.home') ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary' }} py-6" href="{{ route('visitor.home') }}">Beranda</a>
             <a class="{{ request()->routeIs('visitor.news') ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary' }} py-6" href="{{ route('visitor.news') }}">Berita</a>
             <a class="{{ request()->routeIs('visitor.competitions') ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary' }} py-6" href="{{ route('visitor.competitions') }}">Lomba</a>
             <a class="{{ request()->routeIs('visitor.locations') ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary' }} py-6" href="{{ route('visitor.locations') }}">Peta</a>
-            <a class="bg-primary-container text-white px-4 py-2 rounded-full shadow" href="{{ route('visitor.registration.create') }}">Daftar</a>
+            <a class="{{ request()->routeIs('visitor.videos') ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary' }} py-6" href="{{ route('visitor.videos') }}">Video</a>
+            @if ($registrationSetting->shouldShowRegistrationMenu())
+                <a class="bg-primary-container text-white px-4 py-2 rounded-full shadow" href="{{ route('visitor.registration.create') }}">Daftar</a>
+            @endif
         </nav>
     </div>
 </header>
@@ -102,12 +112,16 @@
         <span class="material-symbols-outlined">map</span>
         <span class="text-[10px] font-label-bold">Peta</span>
     </a>
+    <a class="flex flex-col items-center justify-center {{ request()->routeIs('visitor.videos') ? 'bg-primary-container text-on-primary-container rounded-full px-4 py-1' : 'text-secondary hover:scale-110' }} transition-all duration-200" href="{{ route('visitor.videos') }}">
+        <span class="material-symbols-outlined">play_circle</span>
+        <span class="text-[10px] font-label-bold">Video</span>
+    </a>
 </nav>
 
 <footer class="bg-surface-container-high border-t border-outline-variant/50 w-full py-12 px-gutter mt-section-gap relative pb-24 md:pb-12">
     <div class="max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-start gap-12">
         <div class="max-w-md">
-            <h2 class="text-headline-md font-headline-md font-extrabold text-primary mb-4">KONAWE 81</h2>
+            <h2 class="text-headline-md font-headline-md font-extrabold text-primary mb-4">{{ $siteSetting->footerTitle() }}</h2>
             <p class="text-body-md font-body-md text-on-surface-variant mb-6 leading-relaxed">
                 Pemerintah Kabupaten Konawe berkomitmen untuk terus memajukan kesejahteraan masyarakat dan melestarikan budaya luhur daerah dalam semangat kemerdekaan Republik Indonesia.
             </p>
@@ -121,8 +135,11 @@
             <div class="flex flex-col gap-4">
                 <span class="font-label-bold text-label-bold text-primary">Tautan Resmi</span>
                 <a class="text-on-surface-variant hover:text-primary transition-colors text-body-md" href="{{ route('visitor.news') }}">Berita & Pengumuman</a>
-                <a class="text-on-surface-variant hover:text-primary transition-colors text-body-md" href="{{ route('visitor.registration.create') }}">Pendaftaran Lomba</a>
-                <a class="text-on-surface-variant hover:text-primary transition-colors text-body-md" href="{{ route('login') }}">Panel Admin</a>
+                <a class="text-on-surface-variant hover:text-primary transition-colors text-body-md" href="{{ route('visitor.videos') }}">Video Kemerdekaan</a>
+                <a class="text-on-surface-variant hover:text-primary transition-colors text-body-md" href="https://logohutri.istanapresiden.go.id/81" target="_blank" rel="noopener">Logo Resmi HUT RI ke-81</a>
+                @if ($registrationSetting->shouldShowRegistrationMenu())
+                    <a class="text-on-surface-variant hover:text-primary transition-colors text-body-md" href="{{ route('visitor.registration.create') }}">Pendaftaran Lomba</a>
+                @endif
             </div>
             <div class="flex flex-col gap-4">
                 <span class="font-label-bold text-label-bold text-primary">Kantor</span>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Visitor;
 
 use App\Http\Controllers\Controller;
 use App\Models\Competition;
+use App\Models\SiteSetting;
 use App\Services\RegistrationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -14,6 +15,8 @@ class RegistrationController extends Controller
 {
     public function create(?Competition $competition = null): View
     {
+        abort_if(SiteSetting::current()->isRegistrationHidden(), 404);
+
         return view('visitor.registration', [
             'competition' => $competition,
             'competitions' => Competition::query()->where('is_open', true)->orderBy('starts_at')->get(),
@@ -22,6 +25,14 @@ class RegistrationController extends Controller
 
     public function store(Request $request, RegistrationService $registrationService): RedirectResponse
     {
+        $setting = SiteSetting::current();
+
+        abort_if($setting->isRegistrationHidden(), 404);
+
+        if ($setting->isRegistrationClosed()) {
+            return to_route('visitor.registration.create')->with('status', $setting->closedMessage());
+        }
+
         $validated = $request->validate([
             'competition_id' => ['required', 'exists:competitions,id'],
             'participant_name' => ['required', 'string', 'max:255'],

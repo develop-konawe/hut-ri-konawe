@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\ActivityLocation;
 use App\Models\Competition;
 use App\Models\IndependenceVideo;
+use App\Models\SiteSetting;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -23,6 +24,12 @@ class DatabaseSeeder extends Seeder
             'name' => 'Admin Konawe 81',
             'email' => 'admin@konawe81.id',
             'password' => Hash::make('password'),
+        ]);
+
+        SiteSetting::query()->firstOrCreate([], [
+            'registration_enabled' => true,
+            'registration_status' => SiteSetting::REGISTRATION_OPEN,
+            'registration_closed_message' => SiteSetting::DEFAULT_REGISTRATION_CLOSED_MESSAGE,
         ]);
 
         Competition::query()->insert([

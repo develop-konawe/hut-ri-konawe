@@ -70,10 +70,10 @@
     <div class="w-full max-w-md">
         <div class="text-center mb-10 space-y-4">
             <div class="inline-block transition-transform duration-500 hover:scale-105">
-                <img alt="Konawe 81st Independence Logo" class="h-20 sm:h-24 w-auto mx-auto drop-shadow-md" src="{{ asset('assets/logo/hutri81-full-light.png') }}">
+                <img alt="Logo HUT RI ke-81 Kabupaten Konawe" class="h-20 sm:h-24 w-auto mx-auto drop-shadow-md" src="{{ asset('assets/logo/hutri81-full-light.png') }}">
             </div>
             <div class="space-y-1">
-                <h1 class="font-headline text-2xl sm:text-3xl font-extrabold text-primary tracking-tight">Konawe 81 Admin</h1>
+                <h1 class="font-headline text-2xl sm:text-3xl font-extrabold text-primary tracking-tight">HUT RI ke-81 Kabupaten Konawe</h1>
                 <p class="text-on-surface-variant tracking-wide">Independence Management Portal</p>
             </div>
         </div>

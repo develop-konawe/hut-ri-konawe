@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('title', 'Dashboard Admin')
-@section('heading', 'Konawe 81 Portal')
+@section('heading', 'HUT RI ke-81 Kabupaten Konawe')
 
 @section('content')
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">

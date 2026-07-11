@@ -4,6 +4,14 @@
 
 @section('content')
 <section class="max-w-container-max mx-auto px-gutter py-10">
+    @if ($registrationSetting->isRegistrationClosed())
+        <div class="glass-panel rounded-[2rem] p-8 max-w-3xl mx-auto text-center">
+            <span class="material-symbols-outlined text-primary text-6xl mb-4">info</span>
+            <h1 class="font-headline text-4xl font-extrabold text-primary mb-4">Pendaftaran Ditutup</h1>
+            <p class="text-secondary text-lg leading-relaxed">{{ $registrationSetting->closedMessage() }}</p>
+            <a class="inline-flex mt-8 bg-primary-container text-white px-8 py-4 rounded-full font-bold shadow-lg" href="{{ route('visitor.competitions') }}">Lihat Jadwal Lomba</a>
+        </div>
+    @else
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
         <div class="lg:col-span-5">
             <h1 class="font-headline text-4xl font-extrabold text-primary mb-4">Formulir Pendaftaran</h1>
@@ -64,5 +72,6 @@
             </form>
         </div>
     </div>
+    @endif
 </section>
 @endsection
