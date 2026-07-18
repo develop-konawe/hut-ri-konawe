@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ActivityLocation;
 use App\Models\Competition;
 use App\Models\IndependenceVideo;
+use App\Models\LiveStreaming;
 use App\Services\HomePageService;
 use Illuminate\Contracts\View\View;
 
@@ -34,6 +35,13 @@ class HomeController extends Controller
     {
         return view('visitor.videos', [
             'videos' => IndependenceVideo::query()->latest('published_at')->get(),
+        ]);
+    }
+
+    public function liveStreamings(): View
+    {
+        return view('visitor.live_streamings', [
+            'liveStreamings' => LiveStreaming::query()->where('is_active', true)->latest()->get(),
         ]);
     }
 }

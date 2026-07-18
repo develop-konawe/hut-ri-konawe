@@ -76,8 +76,9 @@
             <a class="{{ request()->routeIs('visitor.home') ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary' }} py-6" href="{{ route('visitor.home') }}">Beranda</a>
             <a class="{{ request()->routeIs('visitor.news') ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary' }} py-6" href="{{ route('visitor.news') }}">Berita</a>
             <a class="{{ request()->routeIs('visitor.competitions') ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary' }} py-6" href="{{ route('visitor.competitions') }}">Lomba</a>
-            <a class="{{ request()->routeIs('visitor.locations') ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary' }} py-6" href="{{ route('visitor.locations') }}">Peta</a>
+            <a class="{{ request()->routeIs('visitor.locations') ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary' }} py-6" href="{{ route('visitor.locations') }}">Kegiatan</a>
             <a class="{{ request()->routeIs('visitor.videos') ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary' }} py-6" href="{{ route('visitor.videos') }}">Video</a>
+            <a class="{{ request()->routeIs('visitor.live_streamings') ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary' }} py-6" href="{{ route('visitor.live_streamings') }}">Live</a>
             @if ($registrationSetting->shouldShowRegistrationMenu())
                 <a class="bg-primary-container text-white px-4 py-2 rounded-full shadow" href="{{ route('visitor.registration.create') }}">Daftar</a>
             @endif
@@ -110,11 +111,15 @@
     </a>
     <a class="flex flex-col items-center justify-center {{ request()->routeIs('visitor.locations') ? 'bg-primary-container text-on-primary-container rounded-full px-4 py-1' : 'text-secondary hover:scale-110' }} transition-all duration-200" href="{{ route('visitor.locations') }}">
         <span class="material-symbols-outlined">map</span>
-        <span class="text-[10px] font-label-bold">Peta</span>
+        <span class="text-[10px] font-label-bold">Kegiatan</span>
     </a>
     <a class="flex flex-col items-center justify-center {{ request()->routeIs('visitor.videos') ? 'bg-primary-container text-on-primary-container rounded-full px-4 py-1' : 'text-secondary hover:scale-110' }} transition-all duration-200" href="{{ route('visitor.videos') }}">
         <span class="material-symbols-outlined">play_circle</span>
         <span class="text-[10px] font-label-bold">Video</span>
+    </a>
+    <a class="flex flex-col items-center justify-center {{ request()->routeIs('visitor.live_streamings') ? 'bg-primary-container text-on-primary-container rounded-full px-4 py-1' : 'text-secondary hover:scale-110' }} transition-all duration-200" href="{{ route('visitor.live_streamings') }}">
+        <span class="material-symbols-outlined">sensors</span>
+        <span class="text-[10px] font-label-bold">Live</span>
     </a>
 </nav>
 
@@ -136,6 +141,7 @@
                 <span class="font-label-bold text-label-bold text-primary">Tautan Resmi</span>
                 <a class="text-on-surface-variant hover:text-primary transition-colors text-body-md" href="{{ route('visitor.news') }}">Berita & Pengumuman</a>
                 <a class="text-on-surface-variant hover:text-primary transition-colors text-body-md" href="{{ route('visitor.videos') }}">Video Kemerdekaan</a>
+                <a class="text-on-surface-variant hover:text-primary transition-colors text-body-md" href="{{ route('visitor.live_streamings') }}">Live Streaming</a>
                 <a class="text-on-surface-variant hover:text-primary transition-colors text-body-md" href="https://logohutri.istanapresiden.go.id/81" target="_blank" rel="noopener">Logo Resmi HUT RI ke-81</a>
                 @if ($registrationSetting->shouldShowRegistrationMenu())
                     <a class="text-on-surface-variant hover:text-primary transition-colors text-body-md" href="{{ route('visitor.registration.create') }}">Pendaftaran Lomba</a>

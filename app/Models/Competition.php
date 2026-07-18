@@ -17,6 +17,8 @@ class Competition extends Model
         'venue',
         'quota',
         'is_open',
+        'latitude',
+        'longitude',
     ];
 
     protected function casts(): array

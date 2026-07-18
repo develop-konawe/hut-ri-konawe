@@ -78,7 +78,7 @@ class LocationController extends Controller
 
     private function validated(Request $request): array
     {
-        return $request->validate([
+        $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'type' => ['required', 'in:seni,olahraga,upacara,umum'],
             'address' => ['required', 'string', 'max:255'],
@@ -86,6 +86,12 @@ class LocationController extends Controller
             'longitude' => ['required', 'numeric', 'between:-180,180'],
             'activity_at' => ['nullable', 'date'],
             'description' => ['nullable', 'string'],
+            'is_registration_open' => ['nullable', 'boolean'],
+            'registration_deadline' => ['nullable', 'date'],
         ]);
+
+        $data['is_registration_open'] = $request->boolean('is_registration_open');
+
+        return $data;
     }
 }

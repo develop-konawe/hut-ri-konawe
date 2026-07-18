@@ -14,6 +14,8 @@ class ActivityLocation extends Model
         'longitude',
         'activity_at',
         'description',
+        'is_registration_open',
+        'registration_deadline',
     ];
 
     protected function casts(): array
@@ -22,6 +24,13 @@ class ActivityLocation extends Model
             'latitude' => 'decimal:7',
             'longitude' => 'decimal:7',
             'activity_at' => 'datetime',
+            'is_registration_open' => 'boolean',
+            'registration_deadline' => 'datetime',
         ];
+    }
+
+    public function registrations()
+    {
+        return $this->hasMany(ActivityRegistration::class);
     }
 }

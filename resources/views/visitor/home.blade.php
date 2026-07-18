@@ -25,7 +25,7 @@
             {{ $registrationSetting->closedMessage() }}
         </div>
     @endif
-    <a class="bg-secondary-container text-secondary px-5 py-3 rounded-full hover:scale-105 transition-transform flex items-center gap-2 font-bold" href="{{ route('visitor.locations') }}"><span class="material-symbols-outlined">map</span>Peta</a>
+    <a class="bg-secondary-container text-secondary px-5 py-3 rounded-full hover:scale-105 transition-transform flex items-center gap-2 font-bold" href="{{ route('visitor.locations') }}"><span class="material-symbols-outlined">map</span>Kegiatan</a>
     <a class="bg-white text-primary px-5 py-3 rounded-full hover:scale-105 transition-transform flex items-center gap-2 font-bold" href="{{ route('visitor.videos') }}"><span class="material-symbols-outlined">play_circle</span>Video</a>
     </div>
 </div>
@@ -203,6 +203,64 @@
     </article>
 </section>
 
+<section class="px-gutter max-w-container-max mx-auto pb-section-gap">
+    <div class="flex items-center justify-between mb-5">
+        <h2 class="font-headline text-3xl font-bold">Kegiatan</h2>
+        <a class="text-primary font-semibold" href="{{ route('visitor.locations') }}">Lihat Semua</a>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        @forelse ($locations as $location)
+            <article class="glass-panel rounded-2xl p-5">
+                <p class="text-xs font-bold text-primary mb-2 uppercase">{{ $location->type }}</p>
+                <h3 class="font-headline text-xl font-bold">{{ $location->name }}</h3>
+                <p class="text-on-surface-variant mt-2">{{ Str::limit($location->description, 100) }}</p>
+                @if($location->activity_at)
+                    <p class="text-sm mt-3 font-semibold text-secondary flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">schedule</span> {{ $location->activity_at->translatedFormat('d F Y H:i') }}</p>
+                @endif
+                <div class="mt-4 pt-4 border-t border-outline-variant/30 flex justify-between items-center">
+                    <button type="button" onclick="openEventModal('activity-modal-{{ $location->id }}')" class="text-primary font-bold text-sm flex items-center gap-1 hover:text-primary-container transition-colors">
+                        <span class="material-symbols-outlined text-[18px]">info</span> Detail & Peta
+                    </button>
+                    @if($location->is_registration_open && (!$location->registration_deadline || now()->isBefore($location->registration_deadline)))
+                        <a href="{{ route('visitor.activity_registration.create', $location) }}" class="bg-primary hover:bg-primary-container text-white px-4 py-1.5 rounded-full text-xs font-bold transition-colors shadow-sm">Daftar Hadir</a>
+                    @endif
+                </div>
+            </article>
+        @empty
+            <article class="glass-panel rounded-2xl p-5 md:col-span-3 text-center text-secondary">Data kegiatan belum tersedia.</article>
+        @endforelse
+    </div>
+</section>
+
+<section class="px-gutter max-w-container-max mx-auto pb-section-gap">
+    <div class="flex items-center justify-between mb-5">
+        <h2 class="font-headline text-3xl font-bold">Lomba Kemerdekaan</h2>
+        <a class="text-primary font-semibold" href="{{ route('visitor.competitions') }}">Lihat Semua</a>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        @forelse ($competitions as $competition)
+            <article class="glass-panel rounded-2xl p-5 border-t-4 border-primary">
+                <span class="px-3 py-1 rounded-full bg-secondary-container text-secondary text-xs font-bold self-start">{{ strtoupper($competition->category) }}</span>
+                <h3 class="font-headline text-xl font-bold text-primary mt-3">{{ $competition->name }}</h3>
+                <p class="text-on-surface-variant mt-2 text-sm">{{ Str::limit($competition->description, 100) }}</p>
+                @if($competition->starts_at)
+                    <p class="text-sm mt-3 font-semibold text-secondary flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">event</span> {{ $competition->starts_at->translatedFormat('d F Y H:i') }} WITA</p>
+                @endif
+                <div class="mt-4 pt-4 border-t border-outline-variant/30 flex justify-between items-center">
+                    <button type="button" onclick="openEventModal('competition-modal-{{ $competition->id }}')" class="text-primary font-bold text-sm flex items-center gap-1 hover:text-primary-container transition-colors">
+                        <span class="material-symbols-outlined text-[18px]">info</span> Detail & Peta
+                    </button>
+                    @if($competition->is_open && (!$competition->registration_deadline || now()->isBefore($competition->registration_deadline)))
+                        <a href="{{ route('visitor.registration.create', ['competition' => $competition->slug]) }}" class="bg-primary hover:bg-primary-container text-white px-4 py-1.5 rounded-full text-xs font-bold transition-colors shadow-sm">Daftar Lomba</a>
+                    @endif
+                </div>
+            </article>
+        @empty
+            <article class="glass-panel rounded-2xl p-5 md:col-span-3 text-center text-secondary">Data lomba belum tersedia.</article>
+        @endforelse
+    </div>
+</section>
+
 <section class="px-gutter max-w-container-max mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 pb-section-gap">
     <div>
         <div class="flex items-center justify-between mb-5">
@@ -236,6 +294,144 @@
         </div>
     </div>
 </section>
+
+<!-- Modals for Activities -->
+@foreach($locations as $location)
+<div id="activity-modal-{{ $location->id }}" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 sm:p-6 opacity-0 transition-opacity duration-300">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeEventModal('activity-modal-{{ $location->id }}')"></div>
+    <div class="relative bg-surface rounded-[2rem] w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl transform scale-95 transition-transform duration-300">
+        <div class="flex items-center justify-between p-6 border-b border-outline-variant/30">
+            <h3 class="font-headline text-2xl font-bold text-primary">{{ $location->name }}</h3>
+            <button onclick="closeEventModal('activity-modal-{{ $location->id }}')" class="text-on-surface-variant hover:text-primary transition-colors bg-surface-container-high rounded-full w-10 h-10 flex items-center justify-center">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div class="p-6 overflow-y-auto space-y-5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm bg-surface-container-low p-4 rounded-2xl">
+                <div>
+                    <span class="block text-on-surface-variant font-bold mb-1">Kategori</span>
+                    <span class="inline-block px-3 py-1 bg-secondary-container text-secondary font-bold rounded-full text-xs uppercase">{{ $location->type }}</span>
+                </div>
+                <div>
+                    <span class="block text-on-surface-variant font-bold mb-1">Waktu Pelaksanaan</span>
+                    <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">schedule</span> {{ $location->activity_at ? $location->activity_at->translatedFormat('d F Y H:i') : 'Menyusul' }}</span>
+                </div>
+                <div class="sm:col-span-2">
+                    <span class="block text-on-surface-variant font-bold mb-1">Alamat / Lokasi</span>
+                    <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">location_on</span> {{ $location->address }}</span>
+                </div>
+                <div class="sm:col-span-2 pt-3 border-t border-outline-variant/30 mt-1">
+                    <span class="block text-on-surface-variant font-bold mb-1">Jumlah Pendaftar Hadir</span>
+                    <span class="flex items-center gap-1 text-primary font-bold"><span class="material-symbols-outlined text-[18px]">group</span> {{ $location->registrations()->count() }} Orang</span>
+                </div>
+            </div>
+            
+            <div>
+                <h4 class="font-bold text-lg mb-2">Deskripsi</h4>
+                <p class="text-on-surface-variant leading-relaxed">{{ $location->description ?? 'Tidak ada deskripsi.' }}</p>
+            </div>
+            
+            <div>
+                <h4 class="font-bold text-lg mb-3">Peta Lokasi</h4>
+                <div class="rounded-2xl overflow-hidden aspect-video bg-surface-container-high relative">
+                    @if($location->latitude && $location->longitude)
+                        <iframe 
+                            class="absolute inset-0 w-full h-full border-0" 
+                            src="https://maps.google.com/maps?q={{ $location->latitude }},{{ $location->longitude }}&t=m&z=15&output=embed&iwloc=near" 
+                            allowfullscreen 
+                            loading="lazy">
+                        </iframe>
+                    @else
+                        <div class="absolute inset-0 flex items-center justify-center text-on-surface-variant">
+                            <span class="material-symbols-outlined text-4xl mr-2">map</span> Koordinat tidak tersedia
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+        <div class="p-6 border-t border-outline-variant/30 flex justify-end gap-3 bg-surface-container-lowest">
+            <button onclick="closeEventModal('activity-modal-{{ $location->id }}')" class="bg-surface-container-high px-6 py-2.5 rounded-full font-bold">Tutup</button>
+            @if($location->is_registration_open && (!$location->registration_deadline || now()->isBefore($location->registration_deadline)))
+                <a href="{{ route('visitor.activity_registration.create', $location) }}" class="bg-primary hover:bg-primary-container text-white px-6 py-2.5 rounded-full font-bold shadow-md transition-colors flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px]">edit_document</span> Daftar Hadir
+                </a>
+            @endif
+        </div>
+    </div>
+</div>
+@endforeach
+
+<!-- Modals for Competitions -->
+@foreach($competitions as $competition)
+<div id="competition-modal-{{ $competition->id }}" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 sm:p-6 opacity-0 transition-opacity duration-300">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeEventModal('competition-modal-{{ $competition->id }}')"></div>
+    <div class="relative bg-surface rounded-[2rem] w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl transform scale-95 transition-transform duration-300">
+        <div class="flex items-center justify-between p-6 border-b border-outline-variant/30">
+            <h3 class="font-headline text-2xl font-bold text-primary">{{ $competition->name }}</h3>
+            <button onclick="closeEventModal('competition-modal-{{ $competition->id }}')" class="text-on-surface-variant hover:text-primary transition-colors bg-surface-container-high rounded-full w-10 h-10 flex items-center justify-center">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div class="p-6 overflow-y-auto space-y-5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm bg-surface-container-low p-4 rounded-2xl">
+                <div>
+                    <span class="block text-on-surface-variant font-bold mb-1">Kategori</span>
+                    <span class="inline-block px-3 py-1 bg-secondary-container text-secondary font-bold rounded-full text-xs uppercase">{{ $competition->category }}</span>
+                </div>
+                <div>
+                    <span class="block text-on-surface-variant font-bold mb-1">Waktu Pelaksanaan</span>
+                    <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">event</span> {{ $competition->starts_at ? $competition->starts_at->translatedFormat('d F Y H:i') : 'Menyusul' }}</span>
+                </div>
+                <div class="sm:col-span-2">
+                    <span class="block text-on-surface-variant font-bold mb-1">Alamat / Lokasi</span>
+                    <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">location_on</span> {{ $competition->venue }}</span>
+                </div>
+                @if($competition->registration_deadline)
+                <div class="sm:col-span-2 text-red-600">
+                    <span class="block font-bold mb-1">Batas Akhir Pendaftaran</span>
+                    <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">warning</span> {{ $competition->registration_deadline->translatedFormat('d F Y H:i') }}</span>
+                </div>
+                @endif
+                <div class="sm:col-span-2 pt-3 border-t border-outline-variant/30 mt-1">
+                    <span class="block text-on-surface-variant font-bold mb-1">Jumlah Pendaftar Lomba</span>
+                    <span class="flex items-center gap-1 text-primary font-bold"><span class="material-symbols-outlined text-[18px]">group</span> {{ $competition->registrations()->count() }} Peserta/Tim</span>
+                </div>
+            </div>
+            
+            <div>
+                <h4 class="font-bold text-lg mb-2">Deskripsi Lomba</h4>
+                <p class="text-on-surface-variant leading-relaxed">{{ $competition->description ?? 'Tidak ada deskripsi.' }}</p>
+            </div>
+            
+            <div>
+                <h4 class="font-bold text-lg mb-3">Peta Lokasi</h4>
+                <div class="rounded-2xl overflow-hidden aspect-video bg-surface-container-high relative">
+                    @if($competition->latitude && $competition->longitude)
+                        <iframe 
+                            class="absolute inset-0 w-full h-full border-0" 
+                            src="https://maps.google.com/maps?q={{ $competition->latitude }},{{ $competition->longitude }}&t=m&z=15&output=embed&iwloc=near" 
+                            allowfullscreen 
+                            loading="lazy">
+                        </iframe>
+                    @else
+                        <div class="absolute inset-0 flex items-center justify-center text-on-surface-variant">
+                            <span class="material-symbols-outlined text-4xl mr-2">map</span> Koordinat tidak tersedia
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+        <div class="p-6 border-t border-outline-variant/30 flex justify-end gap-3 bg-surface-container-lowest">
+            <button onclick="closeEventModal('competition-modal-{{ $competition->id }}')" class="bg-surface-container-high px-6 py-2.5 rounded-full font-bold">Tutup</button>
+            @if($competition->is_open && (!$competition->registration_deadline || now()->isBefore($competition->registration_deadline)))
+                <a href="{{ route('visitor.registration.create', ['competition' => $competition->slug]) }}" class="bg-primary hover:bg-primary-container text-white px-6 py-2.5 rounded-full font-bold shadow-md transition-colors flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px]">edit_document</span> Daftar Lomba
+                </a>
+            @endif
+        </div>
+    </div>
+</div>
+@endforeach
 
 <script>
     const countdownStart = new Date('2026-01-01T00:00:00+08:00').getTime();
@@ -324,5 +520,39 @@
         dot.addEventListener('click', () => showBanner(Number(dot.dataset.slideTarget)));
     });
     showBanner(0);
+
+    // Modal Control Functions
+    function openEventModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            
+            // Allow browser to render display:flex before animating opacity/transform
+            requestAnimationFrame(() => {
+                modal.classList.remove('opacity-0');
+                const modalContent = modal.children[1];
+                modalContent.classList.remove('scale-95');
+                modalContent.classList.add('scale-100');
+            });
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    function closeEventModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.add('opacity-0');
+            const modalContent = modal.children[1];
+            modalContent.classList.remove('scale-100');
+            modalContent.classList.add('scale-95');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                document.body.style.overflow = '';
+            }, 300); // Matches duration-300
+        }
+    }
 </script>
 @endsection

@@ -47,6 +47,20 @@
             <label class="font-bold text-sm">Deskripsi</label>
             <textarea name="description" rows="4" class="mt-2 w-full rounded-xl border-surface-variant">{{ old('description', $location->description) }}</textarea>
         </div>
+        <div class="md:col-span-2 pt-4 border-t border-outline-variant/30">
+            <h3 class="font-bold text-lg text-primary mb-4">Pengaturan Pendaftaran</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <label class="flex items-center gap-3 font-bold">
+                    <input type="checkbox" name="is_registration_open" value="1" @checked(old('is_registration_open', $location->is_registration_open)) class="rounded text-primary">
+                    Buka Pendaftaran Kehadiran
+                </label>
+                <div>
+                    <label class="font-bold text-sm">Batas Waktu Pendaftaran</label>
+                    <input type="datetime-local" name="registration_deadline" value="{{ old('registration_deadline', $location->registration_deadline?->format('Y-m-d\TH:i')) }}" class="mt-2 w-full rounded-xl border-surface-variant">
+                    <p class="text-sm text-on-surface-variant mt-1">Kosongkan jika tidak ada batas waktu.</p>
+                </div>
+            </div>
+        </div>
     </div>
     @if ($errors->any())
         <div class="rounded-2xl bg-red-50 text-primary p-4">

@@ -88,6 +88,8 @@ class CompetitionController extends Controller
             'venue' => ['required', 'string', 'max:255'],
             'quota' => ['nullable', 'integer', 'min:1'],
             'is_open' => ['nullable', 'boolean'],
+            'latitude' => ['nullable', 'numeric'],
+            'longitude' => ['nullable', 'numeric'],
         ]);
 
         $data['slug'] = $competition?->slug ?: Str::slug($data['name']).'-'.Str::lower(Str::random(5));
