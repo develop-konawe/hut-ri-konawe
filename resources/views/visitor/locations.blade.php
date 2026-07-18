@@ -36,6 +36,12 @@
                     <p class="text-on-surface-variant mt-2">{{ $location->address }}</p>
                     <p class="text-sm mt-2">{{ $location->activity_at?->translatedFormat('d F Y H:i') }}</p>
                     <p class="text-sm text-on-surface-variant mt-2">{{ $location->description }}</p>
+                    <div class="mt-4 pt-4 border-t border-outline-variant/30 flex justify-between items-center">
+                        <span class="flex items-center gap-1 text-primary font-bold text-sm"><span class="material-symbols-outlined text-[18px]">group</span> {{ $location->registrations()->count() }} Hadir</span>
+                        @if($location->is_registration_open && (!$location->registration_deadline || now()->isBefore($location->registration_deadline)))
+                            <a href="{{ route('visitor.activity_registration.create', $location) }}" class="bg-primary hover:bg-primary-container text-white px-4 py-1.5 rounded-full text-xs font-bold transition-colors shadow-sm">Daftar Hadir</a>
+                        @endif
+                    </div>
                 </article>
             @endforeach
         </div>
