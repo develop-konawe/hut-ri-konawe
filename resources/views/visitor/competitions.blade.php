@@ -41,9 +41,9 @@
                     <p><strong>Lokasi:</strong> {{ $competition->venue }}</p>
                     <p><strong>Kuota:</strong> {{ $competition->quota ?: 'Tidak dibatasi' }}</p>
                 </div>
-                @if ($registrationSetting->isRegistrationOpen())
+                @if ($registrationSetting->isRegistrationOpen() && $competition->is_open && (!$competition->registration_deadline || now()->isBefore($competition->registration_deadline)))
                     <a class="mt-6 bg-primary-container text-white text-center rounded-full px-5 py-3 font-bold" href="{{ route('visitor.registration.competition', $competition) }}">Daftar Sekarang</a>
-                @elseif ($registrationSetting->isRegistrationClosed())
+                @else
                     <div class="mt-6 bg-surface-container-high text-primary text-center rounded-full px-5 py-3 font-bold">Pendaftaran Ditutup</div>
                 @endif
             </article>

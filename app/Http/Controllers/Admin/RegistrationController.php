@@ -13,7 +13,7 @@ use Illuminate\Validation\Rule;
 
 class RegistrationController extends Controller
 {
-    public function __invoke(Request $request): View
+    public function index(Request $request): View
     {
         $filters = $request->validate([
             'competition_id' => ['nullable', 'integer', 'exists:competitions,id'],
@@ -65,5 +65,55 @@ class RegistrationController extends Controller
         }
 
         return back()->with('status', 'Status pendaftar berhasil diperbarui.');
+    }
+
+    public function updatePerformanceStatus(Request $request, Registration $registration): \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+    {
+        $validated = $request->validate([
+            'performance_status' => ['required', Rule::in(Registration::performanceStatuses())],
+        ]);
+
+        $registration->update($validated);
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'performance_status' => $registration->performance_status,
+                'message' => 'Status panggilan berhasil diperbarui',
+            ]);
+        }
+
+        return back()->with('status', 'Status panggilan berhasil diperbarui.');
+    }
+
+    public function edit(Registration $registration): View
+    {
+        return view('admin.registrations.edit', [
+            'registration' => $registration,
+            'statuses' => Registration::statuses(),
+            'competitions' => Competition::query()->orderBy('name')->get(['id', 'name']),
+        ]);
+    }
+
+    public function update(Request $request, Registration $registration): RedirectResponse
+    {
+        $validated = $request->validate([
+            'competition_id' => ['required', 'integer', 'exists:competitions,id'],
+            'participant_name' => ['required', 'string', 'max:255'],
+            'identity_number' => ['nullable', 'string', 'max:50'],
+            'phone' => ['required', 'string', 'max:30'],
+            'email' => ['nullable', 'email', 'max:255'],
+            'institution' => ['nullable', 'string', 'max:255'],
+            'address' => ['nullable', 'string', 'max:1000'],
+            'status' => ['required', Rule::in(array_keys(Registration::statuses()))],
+            'stage' => ['nullable', Rule::in(Registration::stages())],
+            'is_published' => ['boolean'],
+            'performance_status' => ['required', Rule::in(Registration::performanceStatuses())],
+        ]);
+
+        $validated['is_published'] = $request->boolean('is_published');
+
+        $registration->update($validated);
+
+        return redirect()->route('admin.registrations.index')->with('status', 'Data peserta lomba berhasil diperbarui.');
     }
 }

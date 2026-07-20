@@ -78,7 +78,13 @@
             <a class="{{ request()->routeIs('visitor.competitions') ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary' }} py-6" href="{{ route('visitor.competitions') }}">Lomba</a>
             <a class="{{ request()->routeIs('visitor.locations') ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary' }} py-6" href="{{ route('visitor.locations') }}">Kegiatan</a>
             <a class="{{ request()->routeIs('visitor.videos') ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary' }} py-6" href="{{ route('visitor.videos') }}">Video</a>
-            <a class="{{ request()->routeIs('visitor.live_streamings') ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary' }} py-6" href="{{ route('visitor.live_streamings') }}">Live</a>
+            <a class="{{ request()->routeIs('visitor.live_streamings') ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary' }} py-6 flex items-center" href="{{ route('visitor.live_streamings') }}">
+                Live
+                <span class="relative flex h-2 w-2 ml-1.5 mb-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                </span>
+            </a>
             @if ($registrationSetting->shouldShowRegistrationMenu())
                 <a class="bg-primary-container text-white px-4 py-2 rounded-full shadow" href="{{ route('visitor.registration.create') }}">Daftar</a>
             @endif
@@ -118,7 +124,13 @@
         <span class="text-[10px] font-label-bold">Video</span>
     </a>
     <a class="flex flex-col items-center justify-center {{ request()->routeIs('visitor.live_streamings') ? 'bg-primary-container text-on-primary-container rounded-full px-4 py-1' : 'text-secondary hover:scale-110' }} transition-all duration-200" href="{{ route('visitor.live_streamings') }}">
-        <span class="material-symbols-outlined">sensors</span>
+        <div class="relative">
+            <span class="material-symbols-outlined">sensors</span>
+            <span class="absolute -top-0.5 -right-0.5 flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-red-600"></span>
+            </span>
+        </div>
         <span class="text-[10px] font-label-bold">Live</span>
     </a>
 </nav>

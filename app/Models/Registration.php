@@ -21,6 +21,9 @@ class Registration extends Model
         'institution',
         'address',
         'status',
+        'stage',
+        'is_published',
+        'performance_status',
         'submitted_at',
     ];
 
@@ -28,6 +31,7 @@ class Registration extends Model
     {
         return [
             'submitted_at' => 'datetime',
+            'is_published' => 'boolean',
         ];
     }
 
@@ -39,10 +43,28 @@ class Registration extends Model
     public static function statuses(): array
     {
         return [
-            self::STATUS_SUBMITTED => 'Baru Masuk',
-            self::STATUS_VERIFIED => 'Terverifikasi',
-            self::STATUS_REJECTED => 'Ditolak',
-            self::STATUS_CANCELLED => 'Dibatalkan',
+            'submitted' => 'Baru / Menunggu',
+            'verified' => 'Terverifikasi (Lolos)',
+            'rejected' => 'Ditolak',
+            'cancelled' => 'Dibatalkan',
+        ];
+    }
+
+    public static function stages(): array
+    {
+        return [
+            'Penyisihan',
+            'Semi Final',
+            'Final',
+        ];
+    }
+
+    public static function performanceStatuses(): array
+    {
+        return [
+            'Menunggu Panggilan',
+            'Sedang Tampil',
+            'Selesai',
         ];
     }
 

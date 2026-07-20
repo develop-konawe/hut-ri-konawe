@@ -19,7 +19,7 @@ final readonly class HomePageService
             'sportsNews' => $this->newsService->sports(['per_page' => 3]),
             'announcements' => $this->newsService->announcements(['per_page' => 3]),
             'locations' => ActivityLocation::query()->orderBy('activity_at')->limit(6)->get(),
-            'competitions' => Competition::query()->where('is_open', true)->orderBy('starts_at')->limit(6)->get(),
+            'competitions' => Competition::query()->with('registrations')->where('is_open', true)->orderBy('starts_at')->limit(6)->get(),
             'banners' => IndependenceBanner::query()
                 ->where('is_active', true)
                 ->orderBy('sort_order')

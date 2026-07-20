@@ -30,6 +30,19 @@
     </div>
 </div>
 
+<div id="live-performance-container" class="max-w-container-max mx-auto relative z-20 px-gutter mt-6 hidden">
+    <div class="glass-panel border-l-4 border-primary rounded-2xl p-4 shadow-lg flex items-center gap-4">
+        <div class="bg-primary/10 text-primary h-12 w-12 rounded-full flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-2xl animate-pulse">mic</span>
+        </div>
+        <div class="flex-grow">
+            <p class="text-xs font-bold text-primary uppercase tracking-wider mb-1 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span> Live <span id="live-performance-competition" class="ml-1">-</span></p>
+            <p class="font-headline text-lg font-bold text-on-surface leading-tight"><span class="text-primary">Sedang Tampil:</span> <span id="live-performance-participant">-</span></p>
+            <p class="text-sm text-on-surface-variant mt-0.5" id="live-performance-stage">-</p>
+        </div>
+    </div>
+</div>
+
 @php
     $bannerSlides = $banners->isNotEmpty()
         ? $banners
@@ -102,8 +115,8 @@
                 Lihat Jadwal Lomba
             </a>
         </div>
-        <div class="lg:col-span-9 h-full">
-            <div class="relative h-full min-h-[340px] overflow-hidden rounded-[2rem] shadow-2xl aspect-[16/9] lg:aspect-auto bg-gradient-to-br from-primary via-[#72000e] to-black" id="banner-slider">
+        <div class="lg:col-span-9 h-[60vh] min-h-[400px] lg:h-full">
+            <div class="relative h-full w-full overflow-hidden rounded-[2rem] shadow-2xl bg-gradient-to-br from-primary via-[#72000e] to-black" id="banner-slider">
                 @foreach ($bannerSlides as $index => $slide)
                     <article class="banner-slide absolute inset-0 transition-opacity duration-700 {{ $index === 0 ? 'opacity-100' : 'opacity-0' }}" data-slide="{{ $index }}">
                         @php
@@ -124,20 +137,20 @@
                                 <source src="{{ $bannerMediaUrl }}">
                             </video>
                         @else
-                            <img class="absolute inset-0 h-full w-full scale-110 object-cover blur-2xl opacity-50" src="{{ $bannerMediaUrl }}" alt="">
-                            <img class="absolute inset-0 h-full w-full object-contain brightness-90" src="{{ $bannerMediaUrl }}" alt="{{ $slide->title }}">
+                            <img class="absolute inset-0 h-full w-full scale-110 object-cover blur-2xl opacity-40" src="{{ $bannerMediaUrl }}" alt="">
+                            <img class="absolute inset-0 h-full w-full object-contain object-center drop-shadow-xl" src="{{ $bannerMediaUrl }}" alt="{{ $slide->title }}">
                         @endif
                         @if (! empty($slide->title) || ! empty($slide->description) || ! empty($slide->link_url))
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-                            <div class="absolute left-0 right-0 bottom-0 z-10 p-6 md:p-8 text-white">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
+                            <div class="absolute left-0 right-0 bottom-0 z-10 p-5 md:p-8 text-white">
                                 @if (! empty($slide->title))
-                                    <h2 class="font-headline text-3xl md:text-5xl font-extrabold leading-tight max-w-3xl">{{ $slide->title }}</h2>
+                                    <h2 class="font-headline text-2xl sm:text-3xl md:text-5xl font-extrabold leading-tight max-w-3xl drop-shadow-lg">{{ $slide->title }}</h2>
                                 @endif
                                 @if (! empty($slide->description))
-                                    <p class="mt-3 max-w-2xl text-white/85">{{ $slide->description }}</p>
+                                    <p class="mt-2 text-sm sm:text-base md:text-lg max-w-2xl text-white/90 drop-shadow line-clamp-2 md:line-clamp-none">{{ $slide->description }}</p>
                                 @endif
                                 @if (! empty($slide->link_url))
-                                    <a class="mt-5 inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 font-bold text-primary shadow-lg" href="{{ $slide->link_url }}">
+                                    <a class="mt-4 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 md:px-5 md:py-3 text-sm font-bold text-primary shadow-lg hover:scale-105 transition-transform" href="{{ $slide->link_url }}">
                                         Buka Informasi
                                         <span class="material-symbols-outlined text-base">arrow_forward</span>
                                     </a>
@@ -320,6 +333,10 @@
                     <span class="block text-on-surface-variant font-bold mb-1">Alamat / Lokasi</span>
                     <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">location_on</span> {{ $location->address }}</span>
                 </div>
+                <div class="sm:col-span-2 {{ $location->registration_deadline ? 'text-red-600' : 'text-primary' }}">
+                    <span class="block font-bold mb-1">Batas Akhir Pendaftaran</span>
+                    <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">{{ $location->registration_deadline ? 'warning' : 'info' }}</span> {{ $location->registration_deadline ? $location->registration_deadline->translatedFormat('d F Y H:i') : 'Tidak dibatasi' }}</span>
+                </div>
                 <div class="sm:col-span-2 pt-3 border-t border-outline-variant/30 mt-1">
                     <span class="block text-on-surface-variant font-bold mb-1">Jumlah Pendaftar Hadir</span>
                     <span class="flex items-center gap-1 text-primary font-bold"><span class="material-symbols-outlined text-[18px]">group</span> {{ $location->registrations()->count() }} Orang</span>
@@ -386,12 +403,10 @@
                     <span class="block text-on-surface-variant font-bold mb-1">Alamat / Lokasi</span>
                     <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">location_on</span> {{ $competition->venue }}</span>
                 </div>
-                @if($competition->registration_deadline)
-                <div class="sm:col-span-2 text-red-600">
+                <div class="sm:col-span-2 {{ $competition->registration_deadline ? 'text-red-600' : 'text-primary' }}">
                     <span class="block font-bold mb-1">Batas Akhir Pendaftaran</span>
-                    <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">warning</span> {{ $competition->registration_deadline->translatedFormat('d F Y H:i') }}</span>
+                    <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">{{ $competition->registration_deadline ? 'warning' : 'info' }}</span> {{ $competition->registration_deadline ? $competition->registration_deadline->translatedFormat('d F Y H:i') : 'Tidak dibatasi' }}</span>
                 </div>
-                @endif
                 <div class="sm:col-span-2 pt-3 border-t border-outline-variant/30 mt-1">
                     <span class="block text-on-surface-variant font-bold mb-1">Jumlah Pendaftar Lomba</span>
                     <span class="flex items-center gap-1 text-primary font-bold"><span class="material-symbols-outlined text-[18px]">group</span> {{ $competition->registrations()->count() }} Peserta/Tim</span>
@@ -419,6 +434,46 @@
                         </div>
                     @endif
                 </div>
+            </div>
+            
+            <div class="pt-2 border-t border-outline-variant/30">
+                <h4 class="font-bold text-lg mb-3">Daftar Peserta</h4>
+                @php
+                    $publishedRegistrations = $competition->registrations->where('status', 'verified')->where('is_published', true)->groupBy('stage');
+                @endphp
+                @if($publishedRegistrations->isEmpty())
+                    <p class="text-on-surface-variant text-sm bg-surface-container-low p-4 rounded-xl text-center">Belum ada daftar peserta yang dipublikasikan.</p>
+                @else
+                    <div class="space-y-4 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
+                        @foreach($publishedRegistrations as $stage => $registrationsGroup)
+                            <div>
+                                <h5 class="font-bold text-primary mb-2 text-sm border-b border-primary/20 pb-1">{{ $stage ?: 'Peserta' }}</h5>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                    @foreach($registrationsGroup as $reg)
+                                        <div class="bg-surface-container-high rounded-xl p-3 flex items-center gap-3">
+                                            <div class="h-8 w-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs shrink-0">
+                                                {{ strtoupper(substr($reg->participant_name, 0, 1)) }}
+                                            </div>
+                                            <div class="overflow-hidden">
+                                                <p class="font-bold text-sm text-on-surface leading-tight truncate">{{ $reg->participant_name }}</p>
+                                                @if($reg->institution)
+                                                    <p class="text-[11px] text-on-surface-variant truncate mt-0.5">{{ $reg->institution }}</p>
+                                                @endif
+                                                @if($reg->performance_status === 'Sedang Tampil')
+                                                    <span class="inline-block mt-1 bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-sm animate-pulse">Sedang Tampil</span>
+                                                @elseif($reg->performance_status === 'Selesai')
+                                                    <span class="inline-block mt-1 bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded-sm">Selesai</span>
+                                                @else
+                                                    <span class="inline-block mt-1 bg-surface-variant text-on-surface-variant text-[10px] font-bold px-2 py-0.5 rounded-sm">Menunggu</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
             </div>
         </div>
         <div class="p-6 border-t border-outline-variant/30 flex justify-end gap-3 bg-surface-container-lowest">
@@ -554,5 +609,39 @@
             }, 300); // Matches duration-300
         }
     }
+
+    // Live Performance Polling
+    function pollLivePerformances() {
+        fetch('{{ route("visitor.live_performances") }}', {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById('live-performance-container');
+            if (data && data.length > 0) {
+                // Tampilkan peserta pertama (jika ada lebih dari satu lomba yang berlangsung bersamaan, ambil yang pertama saja)
+                const performing = data[0];
+                document.getElementById('live-performance-competition').textContent = performing.competition.name;
+                document.getElementById('live-performance-participant').textContent = performing.participant_name;
+                
+                let stageText = performing.stage || 'Peserta';
+                if (performing.institution) {
+                    stageText += ` - ${performing.institution}`;
+                }
+                document.getElementById('live-performance-stage').textContent = stageText;
+                
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+            }
+        })
+        .catch(err => console.error('Gagal memuat status peserta:', err));
+    }
+
+    pollLivePerformances();
+    setInterval(pollLivePerformances, 10000); // Poll setiap 10 detik
 </script>
 @endsection

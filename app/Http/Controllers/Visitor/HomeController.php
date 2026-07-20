@@ -44,4 +44,16 @@ class HomeController extends Controller
             'liveStreamings' => LiveStreaming::query()->where('is_active', true)->latest()->get(),
         ]);
     }
+
+    public function livePerformances(): \Illuminate\Http\JsonResponse
+    {
+        $performing = \App\Models\Registration::query()
+            ->with('competition:id,name')
+            ->where('status', 'verified')
+            ->where('is_published', true)
+            ->where('performance_status', 'Sedang Tampil')
+            ->get(['id', 'competition_id', 'participant_name', 'institution', 'stage']);
+
+        return response()->json($performing);
+    }
 }

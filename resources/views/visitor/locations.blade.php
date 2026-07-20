@@ -34,8 +34,11 @@
                         <a class="text-primary font-bold text-sm" target="_blank" rel="noopener" href="https://www.google.com/maps?q={{ $location->latitude }},{{ $location->longitude }}">Maps</a>
                     </div>
                     <p class="text-on-surface-variant mt-2">{{ $location->address }}</p>
-                    <p class="text-sm mt-2">{{ $location->activity_at?->translatedFormat('d F Y H:i') }}</p>
-                    <p class="text-sm text-on-surface-variant mt-2">{{ $location->description }}</p>
+                    <p class="text-sm mt-2"><span class="material-symbols-outlined text-[16px] align-text-bottom">schedule</span> {{ $location->activity_at?->translatedFormat('d F Y H:i') }}</p>
+                    @if($location->registration_deadline)
+                        <p class="text-sm mt-1 text-red-600 font-semibold"><span class="material-symbols-outlined text-[16px] align-text-bottom">warning</span> Batas Pendaftaran: {{ $location->registration_deadline->translatedFormat('d F Y H:i') }}</p>
+                    @endif
+                    <p class="text-sm text-on-surface-variant mt-3">{{ $location->description }}</p>
                     <div class="mt-4 pt-4 border-t border-outline-variant/30 flex justify-between items-center">
                         <span class="flex items-center gap-1 text-primary font-bold text-sm"><span class="material-symbols-outlined text-[18px]">group</span> {{ $location->registrations()->count() }} Hadir</span>
                         @if($location->is_registration_open && (!$location->registration_deadline || now()->isBefore($location->registration_deadline)))

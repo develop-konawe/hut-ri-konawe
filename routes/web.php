@@ -23,6 +23,7 @@ Route::get('/jadwal-lomba', [HomeController::class, 'competitions'])->name('visi
 Route::get('/peta-lokasi', [HomeController::class, 'locations'])->name('visitor.locations');
 Route::get('/video-kemerdekaan', [HomeController::class, 'videos'])->name('visitor.videos');
 Route::get('/live-streaming', [HomeController::class, 'liveStreamings'])->name('visitor.live_streamings');
+Route::get('/live-performances', [HomeController::class, 'livePerformances'])->name('visitor.live_performances');
 Route::get('/media/google-drive/{fileId}', GoogleDriveMediaController::class)->name('visitor.media.google-drive');
 Route::get('/pendaftaran', [RegistrationController::class, 'create'])->name('visitor.registration.create');
 Route::get('/pendaftaran/{competition:slug}', [RegistrationController::class, 'create'])->name('visitor.registration.competition');
@@ -43,8 +44,9 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function (): v
     Route::get('/', DashboardController::class)->name('dashboard');
     Route::resource('banners', BannerController::class);
     Route::resource('competitions', CompetitionController::class);
-    Route::resource('registrations', AdminRegistrationController::class)->only(['index', 'destroy']);
+    Route::resource('registrations', AdminRegistrationController::class)->except(['create', 'store', 'show']);
     Route::patch('registrations/{registration}/status', [AdminRegistrationController::class, 'updateStatus'])->name('registrations.status');
+    Route::patch('registrations/{registration}/performance-status', [AdminRegistrationController::class, 'updatePerformanceStatus'])->name('registrations.performance_status');
     
     Route::resource('locations', LocationController::class);
     Route::get('locations/{location}/registrations', [AdminActivityRegistrationController::class, 'index'])->name('locations.registrations.index');
