@@ -28,8 +28,21 @@
             <input type="number" min="1" name="quota" value="{{ old('quota', $competition->quota) }}" class="mt-2 w-full rounded-xl border-surface-variant">
         </div>
         <div>
-            <label class="font-bold text-sm">Mulai Kegiatan</label>
-            <input type="datetime-local" name="starts_at" value="{{ old('starts_at', $competition->starts_at?->format('Y-m-d\TH:i')) }}" class="mt-2 w-full rounded-xl border-surface-variant" required>
+            <label class="font-bold text-sm">Tanggal Lomba <span class="text-red-500">*</span></label>
+            <input type="date" name="event_date" value="{{ old('event_date', $competition->starts_at?->format('Y-m-d')) }}" class="mt-2 w-full rounded-xl border-surface-variant" required>
+            @error('event_date') <p class="text-primary text-sm mt-1">{{ $message }}</p> @enderror
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+            <div>
+                <label class="font-bold text-sm">Waktu Mulai <span class="text-red-500">*</span></label>
+                <input type="time" name="start_time" value="{{ old('start_time', $competition->starts_at?->format('H:i')) }}" class="mt-2 w-full rounded-xl border-surface-variant" required>
+                @error('start_time') <p class="text-primary text-sm mt-1">{{ $message }}</p> @enderror
+            </div>
+            <div>
+                <label class="font-bold text-sm">Waktu Selesai <span class="text-xs font-normal text-on-surface-variant">(Ops)</span></label>
+                <input type="time" name="end_time" value="{{ old('end_time', $competition->ends_at?->format('H:i')) }}" class="mt-2 w-full rounded-xl border-surface-variant">
+                @error('end_time') <p class="text-primary text-sm mt-1">{{ $message }}</p> @enderror
+            </div>
         </div>
         <div>
             <label class="font-bold text-sm">Batas Pendaftaran</label>

@@ -234,9 +234,6 @@
                     <button type="button" onclick="openEventModal('activity-modal-{{ $location->id }}')" class="text-primary font-bold text-sm flex items-center gap-1 hover:text-primary-container transition-colors">
                         <span class="material-symbols-outlined text-[18px]">info</span> Detail & Peta
                     </button>
-                    @if($location->is_registration_open && (!$location->registration_deadline || now()->isBefore($location->registration_deadline)))
-                        <a href="{{ route('visitor.activity_registration.create', $location) }}" class="bg-primary hover:bg-primary-container text-white px-4 py-1.5 rounded-full text-xs font-bold transition-colors shadow-sm">Daftar Hadir</a>
-                    @endif
                 </div>
             </article>
         @empty
@@ -257,15 +254,19 @@
                 <h3 class="font-headline text-xl font-bold text-primary mt-3">{{ $competition->name }}</h3>
                 <p class="text-on-surface-variant mt-2 text-sm">{{ Str::limit($competition->description, 100) }}</p>
                 @if($competition->starts_at)
-                    <p class="text-sm mt-3 font-semibold text-secondary flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">event</span> {{ $competition->starts_at->translatedFormat('d F Y H:i') }} WITA</p>
+                    <p class="text-sm mt-3 font-semibold text-secondary flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[16px]">event</span> 
+                        {{ $competition->starts_at->translatedFormat('d F Y H:i') }} WITA - 
+                        {{ $competition->ends_at ? $competition->ends_at->format('H:i') . ' WITA' : 'Selesai' }}
+                    </p>
                 @endif
                 <div class="mt-4 pt-4 border-t border-outline-variant/30 flex justify-between items-center">
                     <button type="button" onclick="openEventModal('competition-modal-{{ $competition->id }}')" class="text-primary font-bold text-sm flex items-center gap-1 hover:text-primary-container transition-colors">
                         <span class="material-symbols-outlined text-[18px]">info</span> Detail & Peta
                     </button>
-                    @if($competition->is_open && (!$competition->registration_deadline || now()->isBefore($competition->registration_deadline)))
-                        <a href="{{ route('visitor.registration.create', ['competition' => $competition->slug]) }}" class="bg-primary hover:bg-primary-container text-white px-4 py-1.5 rounded-full text-xs font-bold transition-colors shadow-sm">Daftar Lomba</a>
-                    @endif
+                    <button type="button" onclick="openEventModal('participants-modal-{{ $competition->id }}')" class="text-secondary font-bold text-sm flex items-center gap-1 hover:text-primary transition-colors">
+                        <span class="material-symbols-outlined text-[18px]">group</span> Daftar Peserta
+                    </button>
                 </div>
             </article>
         @empty
@@ -397,7 +398,10 @@
                 </div>
                 <div>
                     <span class="block text-on-surface-variant font-bold mb-1">Waktu Pelaksanaan</span>
-                    <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">event</span> {{ $competition->starts_at ? $competition->starts_at->translatedFormat('d F Y H:i') : 'Menyusul' }}</span>
+                    <span class="flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[16px]">event</span> 
+                        {{ $competition->starts_at ? $competition->starts_at->translatedFormat('d F Y H:i') . ' WITA - ' . ($competition->ends_at ? $competition->ends_at->format('H:i') . ' WITA' : 'Selesai') : 'Menyusul' }}
+                    </span>
                 </div>
                 <div class="sm:col-span-2">
                     <span class="block text-on-surface-variant font-bold mb-1">Alamat / Lokasi</span>
@@ -417,6 +421,25 @@
                 <h4 class="font-bold text-lg mb-2">Deskripsi Lomba</h4>
                 <p class="text-on-surface-variant leading-relaxed">{{ $competition->description ?? 'Tidak ada deskripsi.' }}</p>
             </div>
+
+            @if($competition->operators->whereNotNull('phone')->isNotEmpty())
+            <div>
+                <h4 class="font-bold text-lg mb-3">Kontak Panitia</h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    @foreach($competition->operators->whereNotNull('phone') as $operator)
+                        <div class="bg-surface-container-high rounded-xl p-3 flex items-center gap-3">
+                            <div class="h-10 w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                                <span class="material-symbols-outlined">support_agent</span>
+                            </div>
+                            <div>
+                                <p class="font-bold text-sm text-on-surface">{{ $operator->name }}</p>
+                                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $operator->phone) }}" target="_blank" class="text-xs text-primary font-semibold hover:underline flex items-center gap-1 mt-0.5"><span class="material-symbols-outlined text-[14px]">chat</span> {{ $operator->phone }}</a>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+            @endif
             
             <div>
                 <h4 class="font-bold text-lg mb-3">Peta Lokasi</h4>
@@ -436,45 +459,6 @@
                 </div>
             </div>
             
-            <div class="pt-2 border-t border-outline-variant/30">
-                <h4 class="font-bold text-lg mb-3">Daftar Peserta</h4>
-                @php
-                    $publishedRegistrations = $competition->registrations->where('status', 'verified')->where('is_published', true)->groupBy('stage');
-                @endphp
-                @if($publishedRegistrations->isEmpty())
-                    <p class="text-on-surface-variant text-sm bg-surface-container-low p-4 rounded-xl text-center">Belum ada daftar peserta yang dipublikasikan.</p>
-                @else
-                    <div class="space-y-4 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
-                        @foreach($publishedRegistrations as $stage => $registrationsGroup)
-                            <div>
-                                <h5 class="font-bold text-primary mb-2 text-sm border-b border-primary/20 pb-1">{{ $stage ?: 'Peserta' }}</h5>
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                    @foreach($registrationsGroup as $reg)
-                                        <div class="bg-surface-container-high rounded-xl p-3 flex items-center gap-3">
-                                            <div class="h-8 w-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs shrink-0">
-                                                {{ strtoupper(substr($reg->participant_name, 0, 1)) }}
-                                            </div>
-                                            <div class="overflow-hidden">
-                                                <p class="font-bold text-sm text-on-surface leading-tight truncate">{{ $reg->participant_name }}</p>
-                                                @if($reg->institution)
-                                                    <p class="text-[11px] text-on-surface-variant truncate mt-0.5">{{ $reg->institution }}</p>
-                                                @endif
-                                                @if($reg->performance_status === 'Sedang Tampil')
-                                                    <span class="inline-block mt-1 bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-sm animate-pulse">Sedang Tampil</span>
-                                                @elseif($reg->performance_status === 'Selesai')
-                                                    <span class="inline-block mt-1 bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded-sm">Selesai</span>
-                                                @else
-                                                    <span class="inline-block mt-1 bg-surface-variant text-on-surface-variant text-[10px] font-bold px-2 py-0.5 rounded-sm">Menunggu</span>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                @endif
-            </div>
         </div>
         <div class="p-6 border-t border-outline-variant/30 flex justify-end gap-3 bg-surface-container-lowest">
             <button onclick="closeEventModal('competition-modal-{{ $competition->id }}')" class="bg-surface-container-high px-6 py-2.5 rounded-full font-bold">Tutup</button>
@@ -483,6 +467,78 @@
                     <span class="material-symbols-outlined text-[18px]">edit_document</span> Daftar Lomba
                 </a>
             @endif
+        </div>
+    </div>
+</div>
+
+<div id="participants-modal-{{ $competition->id }}" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 sm:p-6 opacity-0 transition-opacity duration-300">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeEventModal('participants-modal-{{ $competition->id }}')"></div>
+    <div class="relative bg-surface rounded-[2rem] w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl transform scale-95 transition-transform duration-300">
+        <div class="flex items-center justify-between p-6 border-b border-outline-variant/30 bg-surface-container-low">
+            <h3 class="font-headline text-2xl font-bold text-primary">Daftar Peserta: {{ $competition->name }}</h3>
+            <button onclick="closeEventModal('participants-modal-{{ $competition->id }}')" class="text-on-surface-variant hover:text-primary transition-colors bg-white shadow-sm border border-outline-variant/30 rounded-full w-10 h-10 flex items-center justify-center">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div class="p-6 overflow-y-auto space-y-5 custom-scrollbar bg-surface flex-1">
+            @php
+                $competition->load('registrations.performances');
+                $publishedRegistrations = $competition->registrations
+                    ->where('status', 'verified');
+            @endphp
+            @if($publishedRegistrations->isEmpty())
+                <div class="bg-surface-container-low p-8 rounded-2xl text-center border border-outline-variant/30">
+                    <span class="material-symbols-outlined text-4xl text-on-surface-variant mb-2">group_off</span>
+                    <p class="text-on-surface-variant font-semibold">Belum ada daftar peserta yang dipublikasikan untuk lomba ini.</p>
+                </div>
+            @else
+                <div class="overflow-x-auto rounded-xl border border-outline-variant/30 bg-white">
+                    <table class="w-full text-left text-sm whitespace-nowrap">
+                        <thead class="bg-surface-container-high text-on-surface-variant border-b border-outline-variant/30">
+                            <tr>
+                                <th class="py-3 px-4 font-bold w-20 text-center">No. Urut</th>
+                                <th class="py-3 px-4 font-bold">Nama Peserta / Tim</th>
+                                <th class="py-3 px-4 font-bold">Asal / Instansi</th>
+                                <th class="py-3 px-4 font-bold">Babak</th>
+                                <th class="py-3 px-4 font-bold">Status Penampilan</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-outline-variant/30">
+                            @foreach($publishedRegistrations->sortBy(fn($r) => $r->performances->last()?->order_number ?? 9999) as $reg)
+                                @php $latestPerf = $reg->performances->last(); @endphp
+                                <tr class="hover:bg-primary/5 transition-colors">
+                                    <td class="py-3 px-4 font-semibold text-center text-on-surface-variant">
+                                        {{ $latestPerf?->order_number ?? '-' }}
+                                    </td>
+                                    <td class="py-3 px-4 font-bold text-on-surface">
+                                        {{ $reg->participant_name }}
+                                    </td>
+                                    <td class="py-3 px-4 text-on-surface-variant">
+                                        {{ $reg->institution ?? '-' }}
+                                    </td>
+                                    <td class="py-3 px-4 text-on-surface-variant font-semibold">
+                                        {{ $latestPerf?->stage ?? '-' }}
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        @if($latestPerf && $latestPerf->status === 'Sedang Tampil')
+                                            <span class="inline-flex items-center gap-1 bg-gradient-to-r from-primary to-[#ff4b4b] text-white text-[11px] font-bold px-3 py-1 rounded-full shadow-sm"><span class="material-symbols-outlined text-[14px] animate-pulse">graphic_eq</span> Sedang Tampil</span>
+                                        @elseif($latestPerf && $latestPerf->status === 'Selesai')
+                                            <span class="inline-flex items-center gap-1 bg-green-100 border border-green-200 text-green-700 text-[11px] font-bold px-3 py-1 rounded-full"><span class="material-symbols-outlined text-[14px]">check_circle</span> Selesai</span>
+                                        @elseif($latestPerf)
+                                            <span class="inline-flex items-center gap-1 bg-surface-variant text-on-surface-variant text-[11px] font-bold px-3 py-1 rounded-full"><span class="material-symbols-outlined text-[14px]">schedule</span> Menunggu</span>
+                                        @else
+                                            <span class="inline-flex items-center gap-1 bg-surface-variant text-on-surface-variant text-[11px] font-bold px-3 py-1 rounded-full">-</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
+        </div>
+        <div class="p-6 border-t border-outline-variant/30 flex justify-end gap-3 bg-surface-container-lowest">
+            <button onclick="closeEventModal('participants-modal-{{ $competition->id }}')" class="bg-surface-container-high hover:bg-surface-variant px-6 py-2.5 rounded-full font-bold transition-colors">Tutup</button>
         </div>
     </div>
 </div>

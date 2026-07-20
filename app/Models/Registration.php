@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Registration extends Model
 {
@@ -40,11 +41,16 @@ class Registration extends Model
         return $this->belongsTo(Competition::class);
     }
 
+    public function performances(): HasMany
+    {
+        return $this->hasMany(Performance::class)->orderBy('scheduled_at')->orderBy('order_number');
+    }
+
     public static function statuses(): array
     {
         return [
             'submitted' => 'Baru / Menunggu',
-            'verified' => 'Terverifikasi (Lolos)',
+            'verified' => 'Terverifikasi',
             'rejected' => 'Ditolak',
             'cancelled' => 'Dibatalkan',
         ];

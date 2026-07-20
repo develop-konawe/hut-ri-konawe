@@ -21,8 +21,13 @@ class RegistrationController extends Controller
             'search' => ['nullable', 'string', 'max:100'],
         ]);
 
+        $user = auth()->user();
+        if ($user->isOperator()) {
+            $filters['competition_id'] = $user->competition_id ?? 0;
+        }
+
         $registrations = Registration::query()
-            ->with('competition')
+            ->with(['competition', 'performances'])
             ->when($filters['competition_id'] ?? null, fn ($query, $competitionId) => $query->where('competition_id', $competitionId))
             ->when($filters['status'] ?? null, fn ($query, $status) => $query->where('status', $status))
             ->when($filters['search'] ?? null, function ($query, $search): void {
@@ -38,8 +43,13 @@ class RegistrationController extends Controller
             ->paginate(15)
             ->withQueryString();
 
+        $competitions = Competition::query()->orderBy('name');
+        if ($user->isOperator()) {
+            $competitions->where('id', $user->competition_id ?? 0);
+        }
+
         return view('admin.registrations.index', [
-            'competitions' => Competition::query()->orderBy('name')->get(['id', 'name']),
+            'competitions' => $competitions->get(['id', 'name']),
             'registrations' => $registrations,
             'statuses' => Registration::statuses(),
             'filters' => $filters,
@@ -48,6 +58,8 @@ class RegistrationController extends Controller
 
     public function updateStatus(Request $request, Registration $registration): RedirectResponse|JsonResponse
     {
+        $this->authorizeCompetition($registration);
+
         $validated = $request->validate([
             'status' => ['required', Rule::in(array_keys(Registration::statuses()))],
         ]);
@@ -67,30 +79,20 @@ class RegistrationController extends Controller
         return back()->with('status', 'Status pendaftar berhasil diperbarui.');
     }
 
-    public function updatePerformanceStatus(Request $request, Registration $registration): \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
-    {
-        $validated = $request->validate([
-            'performance_status' => ['required', Rule::in(Registration::performanceStatuses())],
-        ]);
-
-        $registration->update($validated);
-
-        if ($request->wantsJson()) {
-            return response()->json([
-                'performance_status' => $registration->performance_status,
-                'message' => 'Status panggilan berhasil diperbarui',
-            ]);
-        }
-
-        return back()->with('status', 'Status panggilan berhasil diperbarui.');
-    }
-
     public function edit(Registration $registration): View
     {
+        $this->authorizeCompetition($registration);
+
+        $user = auth()->user();
+        $competitions = Competition::query()->orderBy('name');
+        if ($user->isOperator()) {
+            $competitions->where('id', $user->competition_id ?? 0);
+        }
+
         return view('admin.registrations.edit', [
             'registration' => $registration,
             'statuses' => Registration::statuses(),
-            'competitions' => Competition::query()->orderBy('name')->get(['id', 'name']),
+            'competitions' => $competitions->get(['id', 'name']),
         ]);
     }
 
@@ -103,17 +105,27 @@ class RegistrationController extends Controller
             'phone' => ['required', 'string', 'max:30'],
             'email' => ['nullable', 'email', 'max:255'],
             'institution' => ['nullable', 'string', 'max:255'],
-            'address' => ['nullable', 'string', 'max:1000'],
             'status' => ['required', Rule::in(array_keys(Registration::statuses()))],
-            'stage' => ['nullable', Rule::in(Registration::stages())],
-            'is_published' => ['boolean'],
-            'performance_status' => ['required', Rule::in(Registration::performanceStatuses())],
         ]);
-
-        $validated['is_published'] = $request->boolean('is_published');
 
         $registration->update($validated);
 
         return redirect()->route('admin.registrations.index')->with('status', 'Data peserta lomba berhasil diperbarui.');
+    }
+
+    public function destroy(Registration $registration): RedirectResponse
+    {
+        $this->authorizeCompetition($registration);
+        $registration->delete();
+
+        return redirect()->route('admin.registrations.index')->with('status', 'Data peserta lomba berhasil dihapus.');
+    }
+
+    private function authorizeCompetition(Registration $registration): void
+    {
+        $user = auth()->user();
+        if ($user->isOperator()) {
+            abort_if($registration->competition_id !== $user->competition_id, 403, 'Anda tidak memiliki akses untuk mengubah data peserta di lomba ini.');
+        }
     }
 }

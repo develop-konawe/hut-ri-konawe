@@ -35,21 +35,117 @@
             <article class="glass-panel rounded-[2rem] p-6 flex flex-col">
                 <span class="px-3 py-1 rounded-full bg-secondary-container text-secondary text-xs font-bold self-start">{{ strtoupper($competition->category) }}</span>
                 <h2 class="font-headline text-2xl font-bold mt-4">{{ $competition->name }}</h2>
-                <p class="text-on-surface-variant mt-2 flex-grow">{{ $competition->description }}</p>
+                <p class="text-on-surface-variant mt-2 flex-grow">{{ Str::limit($competition->description, 120) }}</p>
                 <div class="mt-5 text-sm space-y-2">
-                    <p><strong>Tanggal:</strong> {{ $competition->starts_at->translatedFormat('d F Y H:i') }} WITA</p>
-                    <p><strong>Lokasi:</strong> {{ $competition->venue }}</p>
-                    <p><strong>Kuota:</strong> {{ $competition->quota ?: 'Tidak dibatasi' }}</p>
+                    <p class="flex items-center gap-2"><span class="material-symbols-outlined text-[18px] text-primary">event</span> {{ $competition->starts_at->translatedFormat('d F Y H:i') }} WITA - {{ $competition->ends_at ? $competition->ends_at->format('H:i') . ' WITA' : 'Selesai' }}</p>
+                    <p class="flex items-center gap-2"><span class="material-symbols-outlined text-[18px] text-primary">location_on</span> {{ $competition->venue }}</p>
                 </div>
-                @if ($registrationSetting->isRegistrationOpen() && $competition->is_open && (!$competition->registration_deadline || now()->isBefore($competition->registration_deadline)))
-                    <a class="mt-6 bg-primary-container text-white text-center rounded-full px-5 py-3 font-bold" href="{{ route('visitor.registration.competition', $competition) }}">Daftar Sekarang</a>
-                @else
-                    <div class="mt-6 bg-surface-container-high text-primary text-center rounded-full px-5 py-3 font-bold">Pendaftaran Ditutup</div>
-                @endif
+                <div class="mt-6 pt-4 border-t border-outline-variant/30 flex flex-col gap-3">
+                    <button type="button" onclick="openEventModal('competition-modal-{{ $competition->id }}')" class="bg-surface-container-high text-primary hover:bg-surface-variant text-center rounded-full px-5 py-3 font-bold transition-colors">Detail Lomba</button>
+                    
+                    @if ($registrationSetting->isRegistrationOpen() && $competition->is_open && (!$competition->registration_deadline || now()->isBefore($competition->registration_deadline)))
+                        <a class="bg-primary-container text-white text-center rounded-full px-5 py-3 font-bold" href="{{ route('visitor.registration.competition', $competition) }}">Daftar Sekarang</a>
+                    @else
+                        <div class="bg-surface-container-high text-on-surface-variant text-center rounded-full px-5 py-3 font-bold">Pendaftaran Ditutup</div>
+                    @endif
+                </div>
             </article>
         @endforeach
     </div>
 </section>
+
+<!-- Modals for Competitions -->
+@foreach($competitions as $competition)
+<div id="competition-modal-{{ $competition->id }}" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 sm:p-6 opacity-0 transition-opacity duration-300">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeEventModal('competition-modal-{{ $competition->id }}')"></div>
+    <div class="relative bg-surface rounded-[2rem] w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl transform scale-95 transition-transform duration-300">
+        <div class="flex items-center justify-between p-6 border-b border-outline-variant/30">
+            <h3 class="font-headline text-2xl font-bold text-primary">{{ $competition->name }}</h3>
+            <button onclick="closeEventModal('competition-modal-{{ $competition->id }}')" class="text-on-surface-variant hover:text-primary transition-colors bg-surface-container-high rounded-full w-10 h-10 flex items-center justify-center">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div class="p-6 overflow-y-auto space-y-5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm bg-surface-container-low p-4 rounded-2xl">
+                <div>
+                    <span class="block text-on-surface-variant font-bold mb-1">Kategori</span>
+                    <span class="inline-block px-3 py-1 bg-secondary-container text-secondary font-bold rounded-full text-xs uppercase">{{ $competition->category }}</span>
+                </div>
+                <div>
+                    <span class="block text-on-surface-variant font-bold mb-1">Waktu Pelaksanaan</span>
+                    <span class="flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[16px]">event</span> 
+                        {{ $competition->starts_at ? $competition->starts_at->translatedFormat('d F Y H:i') . ' WITA - ' . ($competition->ends_at ? $competition->ends_at->format('H:i') . ' WITA' : 'Selesai') : 'Menyusul' }}
+                    </span>
+                </div>
+                <div class="sm:col-span-2">
+                    <span class="block text-on-surface-variant font-bold mb-1">Alamat / Lokasi</span>
+                    <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">location_on</span> {{ $competition->venue }}</span>
+                </div>
+                <div class="sm:col-span-2 {{ $competition->registration_deadline ? 'text-red-600' : 'text-primary' }}">
+                    <span class="block font-bold mb-1">Batas Akhir Pendaftaran</span>
+                    <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">{{ $competition->registration_deadline ? 'warning' : 'info' }}</span> {{ $competition->registration_deadline ? $competition->registration_deadline->translatedFormat('d F Y H:i') : 'Tidak dibatasi' }}</span>
+                </div>
+                <div class="sm:col-span-2 pt-3 border-t border-outline-variant/30 mt-1">
+                    <span class="block text-on-surface-variant font-bold mb-1">Jumlah Pendaftar Lomba</span>
+                    <span class="flex items-center gap-1 text-primary font-bold"><span class="material-symbols-outlined text-[18px]">group</span> {{ $competition->registrations()->count() }} Peserta/Tim</span>
+                </div>
+            </div>
+            
+            <div>
+                <h4 class="font-bold text-lg mb-2">Deskripsi Lomba</h4>
+                <p class="text-on-surface-variant leading-relaxed">{{ $competition->description ?? 'Tidak ada deskripsi.' }}</p>
+            </div>
+
+            @if($competition->operators->whereNotNull('phone')->isNotEmpty())
+            <div>
+                <h4 class="font-bold text-lg mb-3">Kontak Panitia</h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    @foreach($competition->operators->whereNotNull('phone') as $operator)
+                        <div class="bg-surface-container-high rounded-xl p-3 flex items-center gap-3">
+                            <div class="h-10 w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                                <span class="material-symbols-outlined">support_agent</span>
+                            </div>
+                            <div>
+                                <p class="font-bold text-sm text-on-surface">{{ $operator->name }}</p>
+                                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $operator->phone) }}" target="_blank" class="text-xs text-primary font-semibold hover:underline flex items-center gap-1 mt-0.5"><span class="material-symbols-outlined text-[14px]">chat</span> {{ $operator->phone }}</a>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+            @endif
+            
+            <div>
+                <h4 class="font-bold text-lg mb-3">Peta Lokasi</h4>
+                <div class="rounded-2xl overflow-hidden aspect-video bg-surface-container-high relative">
+                    @if($competition->latitude && $competition->longitude)
+                        <iframe 
+                            class="absolute inset-0 w-full h-full border-0" 
+                            src="https://maps.google.com/maps?q={{ $competition->latitude }},{{ $competition->longitude }}&t=m&z=15&output=embed&iwloc=near" 
+                            allowfullscreen 
+                            loading="lazy">
+                        </iframe>
+                    @else
+                        <div class="absolute inset-0 flex items-center justify-center text-on-surface-variant">
+                            <span class="material-symbols-outlined text-4xl mr-2">map</span> Koordinat tidak tersedia
+                        </div>
+                    @endif
+                </div>
+            </div>
+            
+        </div>
+        <div class="p-6 border-t border-outline-variant/30 flex justify-end gap-3 bg-surface-container-lowest">
+            <button onclick="closeEventModal('competition-modal-{{ $competition->id }}')" class="bg-surface-container-high px-6 py-2.5 rounded-full font-bold">Tutup</button>
+            @if ($registrationSetting->isRegistrationOpen() && $competition->is_open && (!$competition->registration_deadline || now()->isBefore($competition->registration_deadline)))
+                <a href="{{ route('visitor.registration.competition', $competition) }}" class="bg-primary hover:bg-primary-container text-white px-6 py-2.5 rounded-full font-bold shadow-md transition-colors flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px]">edit_document</span> Daftar Lomba
+                </a>
+            @endif
+        </div>
+    </div>
+</div>
+@endforeach
 @endsection
 
 @push('styles')
@@ -234,5 +330,37 @@
             requestAnimationFrame(() => map.invalidateSize());
             setTimeout(() => map.invalidateSize(), 250);
         });
+
+        function openEventModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                
+                requestAnimationFrame(() => {
+                    modal.classList.remove('opacity-0');
+                    const modalContent = modal.children[1];
+                    modalContent.classList.remove('scale-95');
+                    modalContent.classList.add('scale-100');
+                });
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeEventModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('opacity-0');
+                const modalContent = modal.children[1];
+                modalContent.classList.remove('scale-100');
+                modalContent.classList.add('scale-95');
+                
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                    document.body.style.overflow = '';
+                }, 300);
+            }
+        }
     </script>
 @endpush

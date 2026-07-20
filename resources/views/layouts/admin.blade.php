@@ -37,11 +37,16 @@
         body.sidebar-collapsed .sidebar-logo{height:3rem;width:3rem;border-radius:1rem}
         .admin-sidebar-collapsed-initial .sidebar-toggle-icon,
         body.sidebar-collapsed .sidebar-toggle-icon{transform:rotate(180deg)}
+        /* Custom Scrollbar */
+        .admin-sidebar-scroll::-webkit-scrollbar { width: 4px; }
+        .admin-sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
+        .admin-sidebar-scroll::-webkit-scrollbar-thumb { background-color: #e62129; border-radius: 10px; }
+        .admin-sidebar-scroll { scrollbar-width: thin; scrollbar-color: #e62129 transparent; }
     </style>
     @stack('styles')
 </head>
 <body class="bg-surface text-on-surface font-body mosehe-pattern flex min-h-screen">
-<nav class="admin-sidebar bg-surface shadow-sm h-screen fixed left-0 top-0 flex flex-col py-6 px-4 z-20">
+<nav class="admin-sidebar bg-surface shadow-sm h-screen fixed left-0 top-0 flex flex-col py-6 px-4 z-20 overflow-hidden">
     <div class="sidebar-logo-wrap px-4 mb-6 flex items-center justify-between gap-3">
         <div class="sidebar-logo h-20 w-20 rounded-2xl bg-white flex items-center justify-center shadow-lg p-2 shrink-0">
             <img class="h-full w-full object-contain" src="{{ asset('assets/logo/hutri81-symbol.png') }}" alt="Logo HUT RI 81">
@@ -54,15 +59,23 @@
         <h1 class="font-headline text-xl font-bold leading-tight text-primary">HUT RI ke-81 Kabupaten Konawe</h1>
         <p class="text-sm text-on-surface-variant font-semibold">Panel Admin</p>
     </div>
-    <div class="flex flex-col gap-2 flex-grow">
+    <div class="flex flex-col gap-2 flex-grow overflow-y-auto admin-sidebar-scroll pb-4">
         <a title="Dashboard" class="admin-nav-link {{ request()->routeIs('admin.dashboard') ? 'text-primary font-bold border-r-4 border-primary bg-secondary-container/20' : 'text-on-surface-variant' }} flex items-center gap-3 p-3 rounded-l-lg" href="{{ route('admin.dashboard') }}"><span class="material-symbols-outlined">dashboard</span><span class="sidebar-label">Dashboard</span></a>
+        
+        @if(auth()->user()?->isSuperAdmin())
         <a title="Lomba" class="admin-nav-link {{ request()->routeIs('admin.competitions.*') ? 'text-primary font-bold border-r-4 border-primary bg-secondary-container/20' : 'text-on-surface-variant' }} flex items-center gap-3 p-3 rounded-l-lg" href="{{ route('admin.competitions.index') }}"><span class="material-symbols-outlined">event_available</span><span class="sidebar-label">Lomba</span></a>
+        @endif
+        
         <a title="Peserta Lomba" class="admin-nav-link {{ request()->routeIs('admin.registrations.*') ? 'text-primary font-bold border-r-4 border-primary bg-secondary-container/20' : 'text-on-surface-variant' }} flex items-center gap-3 p-3 rounded-l-lg" href="{{ route('admin.registrations.index') }}"><span class="material-symbols-outlined">app_registration</span><span class="sidebar-label">Peserta Lomba</span></a>
+        
+        @if(auth()->user()?->isSuperAdmin())
         <a title="Kegiatan" class="admin-nav-link {{ request()->routeIs('admin.locations.*') ? 'text-primary font-bold border-r-4 border-primary bg-secondary-container/20' : 'text-on-surface-variant' }} flex items-center gap-3 p-3 rounded-l-lg" href="{{ route('admin.locations.index') }}"><span class="material-symbols-outlined">map</span><span class="sidebar-label">Kegiatan</span></a>
         <a title="Banner" class="admin-nav-link {{ request()->routeIs('admin.banners.*') ? 'text-primary font-bold border-r-4 border-primary bg-secondary-container/20' : 'text-on-surface-variant' }} flex items-center gap-3 p-3 rounded-l-lg" href="{{ route('admin.banners.index') }}"><span class="material-symbols-outlined">imagesmode</span><span class="sidebar-label">Banner</span></a>
         <a title="Video" class="admin-nav-link {{ request()->routeIs('admin.videos.*') ? 'text-primary font-bold border-r-4 border-primary bg-secondary-container/20' : 'text-on-surface-variant' }} flex items-center gap-3 p-3 rounded-l-lg" href="{{ route('admin.videos.index') }}"><span class="material-symbols-outlined">play_circle</span><span class="sidebar-label">Video</span></a>
         <a title="Live Streaming" class="admin-nav-link {{ request()->routeIs('admin.live_streamings.*') ? 'text-primary font-bold border-r-4 border-primary bg-secondary-container/20' : 'text-on-surface-variant' }} flex items-center gap-3 p-3 rounded-l-lg" href="{{ route('admin.live_streamings.index') }}"><span class="material-symbols-outlined">sensors</span><span class="sidebar-label">Live Streaming</span></a>
+        <a title="Manajemen Pengguna" class="admin-nav-link {{ request()->routeIs('admin.users.*') ? 'text-primary font-bold border-r-4 border-primary bg-secondary-container/20' : 'text-on-surface-variant' }} flex items-center gap-3 p-3 rounded-l-lg" href="{{ route('admin.users.index') }}"><span class="material-symbols-outlined">group</span><span class="sidebar-label">Pengguna</span></a>
         <a title="Pengaturan" class="admin-nav-link {{ request()->routeIs('admin.settings.*') ? 'text-primary font-bold border-r-4 border-primary bg-secondary-container/20' : 'text-on-surface-variant' }} flex items-center gap-3 p-3 rounded-l-lg" href="{{ route('admin.settings.edit') }}"><span class="material-symbols-outlined">settings</span><span class="sidebar-label">Pengaturan</span></a>
+        @endif
         <a title="Lihat Portal" class="admin-nav-link text-on-surface-variant flex items-center gap-3 p-3 rounded-lg hover:bg-secondary-container/20" href="{{ route('visitor.home') }}"><span class="material-symbols-outlined">public</span><span class="sidebar-label">Lihat Portal</span></a>
         <form method="POST" action="{{ route('logout') }}" class="mt-auto">
             @csrf

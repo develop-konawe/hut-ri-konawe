@@ -83,7 +83,9 @@ class CompetitionController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'category' => ['required', 'in:olahraga,seni,umum'],
             'description' => ['nullable', 'string'],
-            'starts_at' => ['required', 'date'],
+            'event_date' => ['required', 'date'],
+            'start_time' => ['required', 'date_format:H:i'],
+            'end_time' => ['nullable', 'date_format:H:i'],
             'registration_deadline' => ['nullable', 'date'],
             'venue' => ['required', 'string', 'max:255'],
             'quota' => ['nullable', 'integer', 'min:1'],
@@ -94,6 +96,11 @@ class CompetitionController extends Controller
 
         $data['slug'] = $competition?->slug ?: Str::slug($data['name']).'-'.Str::lower(Str::random(5));
         $data['is_open'] = $request->boolean('is_open');
+        
+        $data['starts_at'] = $data['event_date'] . ' ' . $data['start_time'] . ':00';
+        $data['ends_at'] = !empty($data['end_time']) ? $data['event_date'] . ' ' . $data['end_time'] . ':00' : null;
+
+        unset($data['event_date'], $data['start_time'], $data['end_time']);
 
         return $data;
     }

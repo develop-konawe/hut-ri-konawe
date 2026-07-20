@@ -27,7 +27,10 @@
             <tr>
                 <td class="py-4 font-semibold">{{ $competition->name }}</td>
                 <td class="py-4">{{ $competition->category }}</td>
-                <td class="py-4">{{ $competition->starts_at->format('d/m/Y H:i') }}</td>
+                <td class="py-4">
+                    {{ $competition->starts_at->format('d/m/Y H:i') }} WITA - 
+                    {{ $competition->ends_at ? $competition->ends_at->format('H:i') . ' WITA' : 'Selesai' }}
+                </td>
                 <td class="py-4">{{ $competition->venue }}</td>
                 <td class="py-4">
                     <a class="font-bold text-primary" href="{{ route('admin.registrations.index', ['competition_id' => $competition->id]) }}">

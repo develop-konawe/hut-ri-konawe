@@ -29,7 +29,7 @@
                         'on-surface-variant': '#5d3f3c',
                         'on-primary-container': '#ffffff',
                     },
-                    spacing: {'container-max': '1280px', gutter: '1.5rem', 'section-gap': '5rem'},
+                    spacing: {'container-max': '1280px', gutter: '1.5rem', 'section-gap': '8rem'},
                     fontFamily: {
                         body: ['Inter'],
                         headline: ['Montserrat'],

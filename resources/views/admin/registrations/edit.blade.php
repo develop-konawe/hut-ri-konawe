@@ -77,40 +77,6 @@
                 </select>
                 @error('status') <p class="text-primary text-sm mt-1">{{ $message }}</p> @enderror
             </div>
-
-            <div class="bg-surface-container-low p-5 rounded-2xl border border-outline-variant/30 space-y-4">
-                <h4 class="font-bold text-on-surface-variant">Publikasi & Babak (Tampil di Web)</h4>
-                
-                <div>
-                    <label for="stage" class="block text-sm font-bold text-on-surface-variant mb-2">Babak Lomba</label>
-                    <select id="stage" name="stage" class="w-full rounded-xl border-surface-variant bg-white/80 px-4 py-2.5">
-                        <option value="">- Tidak ada / Belum ditentukan -</option>
-                        @foreach (\App\Models\Registration::stages() as $stage)
-                            <option value="{{ $stage }}" @selected(old('stage', $registration->stage) === $stage)>{{ $stage }}</option>
-                        @endforeach
-                    </select>
-                    @error('stage') <p class="text-primary text-sm mt-1">{{ $message }}</p> @enderror
-                </div>
-                
-                <div>
-                    <label for="performance_status" class="block text-sm font-bold text-on-surface-variant mb-2">Status Panggilan</label>
-                    <select id="performance_status" name="performance_status" required class="w-full rounded-xl border-surface-variant bg-white/80 px-4 py-2.5">
-                        @foreach (\App\Models\Registration::performanceStatuses() as $pStatus)
-                            <option value="{{ $pStatus }}" @selected(old('performance_status', $registration->performance_status) === $pStatus)>{{ $pStatus }}</option>
-                        @endforeach
-                    </select>
-                    @error('performance_status') <p class="text-primary text-sm mt-1">{{ $message }}</p> @enderror
-                </div>
-                
-                <div class="flex items-center gap-3 pt-2">
-                    <input type="hidden" name="is_published" value="0">
-                    <input type="checkbox" id="is_published" name="is_published" value="1" @checked(old('is_published', $registration->is_published)) class="w-5 h-5 rounded border-surface-variant text-primary focus:ring-primary">
-                    <label for="is_published" class="text-sm font-bold text-on-surface-variant cursor-pointer">
-                        Tampilkan peserta ini di halaman publik (Website)
-                    </label>
-                </div>
-                @error('is_published') <p class="text-primary text-sm mt-1">{{ $message }}</p> @enderror
-            </div>
         </div>
     </div>
 
@@ -119,4 +85,44 @@
         <button type="submit" class="px-6 py-3 rounded-full font-bold bg-primary text-white shadow hover:bg-primary-container transition-colors">Simpan Perubahan</button>
     </div>
 </form>
+
+<div class="glass-panel rounded-[2rem] p-6 md:p-8 max-w-4xl mt-8">
+    <h3 class="font-headline text-xl font-bold text-primary mb-4 border-b border-primary/20 pb-2">Jadwal Tampil & Babak</h3>
+    
+    @if($registration->performances->isEmpty())
+        <p class="text-sm text-on-surface-variant mb-4">Belum ada jadwal babak untuk peserta ini.</p>
+    @else
+        <div class="overflow-x-auto mb-6">
+            <table class="w-full text-left text-sm">
+                <thead class="text-on-surface-variant border-b border-surface-variant">
+                    <tr>
+                        <th class="py-2 pr-4">Babak</th>
+                        <th class="py-2 pr-4">Nomor Urut</th>
+                        <th class="py-2 pr-4">Jadwal</th>
+                        <th class="py-2 pr-4">Status</th>
+                        <th class="py-2">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-surface-variant">
+                    @foreach($registration->performances as $perf)
+                    <tr>
+                        <td class="py-3 pr-4 font-bold">{{ $perf->stage }}</td>
+                        <td class="py-3 pr-4">{{ $perf->order_number ?? '-' }}</td>
+                        <td class="py-3 pr-4">{{ $perf->scheduled_at ? $perf->scheduled_at->format('d/m/Y H:i') : '-' }}</td>
+                        <td class="py-3 pr-4 font-semibold {{ $perf->status === 'Sedang Tampil' ? 'text-primary' : ($perf->status === 'Selesai' ? 'text-green-700' : 'text-on-surface-variant') }}">
+                            {{ $perf->status }}
+                        </td>
+                        <td class="py-3">
+                            <form method="POST" action="{{ route('admin.performances.destroy', $perf) }}" onsubmit="return confirm('Hapus jadwal ini?')">
+                                @csrf @method('DELETE')
+                                <button type="submit" class="text-red-500 font-bold hover:underline text-xs">Hapus</button>
+                            </form>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    @endif
+</div>
 @endsection

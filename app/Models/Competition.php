@@ -13,6 +13,7 @@ class Competition extends Model
         'category',
         'description',
         'starts_at',
+        'ends_at',
         'registration_deadline',
         'venue',
         'quota',
@@ -25,6 +26,7 @@ class Competition extends Model
     {
         return [
             'starts_at' => 'datetime',
+            'ends_at' => 'datetime',
             'registration_deadline' => 'datetime',
             'is_open' => 'boolean',
         ];
@@ -33,5 +35,10 @@ class Competition extends Model
     public function registrations(): HasMany
     {
         return $this->hasMany(Registration::class);
+    }
+
+    public function operators(): HasMany
+    {
+        return $this->hasMany(User::class)->where('role', 'operator');
     }
 }

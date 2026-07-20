@@ -48,11 +48,20 @@ class HomeController extends Controller
     public function livePerformances(): \Illuminate\Http\JsonResponse
     {
         $performing = \App\Models\Registration::query()
-            ->with('competition:id,name')
+            ->with(['competition:id,name', 'performances' => function ($query) {
+                $query->where('status', 'Sedang Tampil');
+            }])
             ->where('status', 'verified')
-            ->where('is_published', true)
-            ->where('performance_status', 'Sedang Tampil')
-            ->get(['id', 'competition_id', 'participant_name', 'institution', 'stage']);
+            ->whereHas('performances', function ($query) {
+                $query->where('status', 'Sedang Tampil');
+            })
+            ->get(['id', 'competition_id', 'participant_name', 'institution']);
+
+        $performing->transform(function ($registration) {
+            $performance = $registration->performances->first();
+            $registration->stage = $performance ? $performance->stage : '';
+            return $registration;
+        });
 
         return response()->json($performing);
     }
