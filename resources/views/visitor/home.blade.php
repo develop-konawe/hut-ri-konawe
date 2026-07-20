@@ -285,7 +285,9 @@
             @forelse ($sportsNews as $item)
                 <article class="glass-panel rounded-2xl p-5">
                     <p class="text-xs font-bold text-primary mb-2">{{ $item->category ?? 'olahraga' }} - {{ $item->publishedAt ?? 'terbaru' }}</p>
-                    <h3 class="font-headline text-xl font-bold">{{ $item->title }}</h3>
+                    <h3 class="font-headline text-xl font-bold">
+                        <a href="{{ $item->url ?? '#' }}" @if(isset($item->url) && $item->url) target="_blank" rel="noopener" @endif class="hover:text-primary transition-colors">{{ $item->title }}</a>
+                    </h3>
                     <p class="text-on-surface-variant mt-2">{{ $item->excerpt }}</p>
                 </article>
             @empty
@@ -299,7 +301,9 @@
             @forelse ($announcements as $item)
                 <article class="glass-panel rounded-2xl p-5">
                     <p class="text-xs font-bold text-primary mb-2">{{ $item->publishedAt ?? 'terbaru' }}</p>
-                    <h3 class="font-headline text-xl font-bold">{{ $item->title }}</h3>
+                    <h3 class="font-headline text-xl font-bold">
+                        <a href="{{ $item->url ?? '#' }}" @if(isset($item->url) && $item->url) target="_blank" rel="noopener" @endif class="hover:text-primary transition-colors">{{ $item->title }}</a>
+                    </h3>
                     <p class="text-on-surface-variant mt-2">{{ $item->excerpt }}</p>
                 </article>
             @empty

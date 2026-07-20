@@ -25,7 +25,9 @@
                             </div>
                             <div class="md:w-3/5 p-6">
                                 <p class="text-xs uppercase tracking-widest font-bold text-primary mb-2">{{ $item->category ?? 'sports' }} - {{ $item->publishedAt ?? 'terbaru' }}</p>
-                                <h2 class="font-headline text-2xl font-bold mb-3">{{ $item->title }}</h2>
+                                <h2 class="font-headline text-2xl font-bold mb-3">
+                                    <a href="{{ $item->url ?? '#' }}" @if(isset($item->url) && $item->url) target="_blank" rel="noopener" @endif class="hover:text-primary transition-colors">{{ $item->title }}</a>
+                                </h2>
                                 <p class="text-on-surface-variant">{{ $item->excerpt }}</p>
                                 @if ($item->url)
                                     <a class="inline-flex mt-5 text-primary font-bold" href="{{ $item->url }}" target="_blank" rel="noopener">Baca selengkapnya</a>
@@ -44,7 +46,9 @@
                 @forelse ($announcements as $item)
                     <article class="glass-panel rounded-2xl p-5 border-l-4 border-primary">
                         <p class="text-xs font-bold text-primary mb-2">{{ $item->publishedAt ?? 'terbaru' }}</p>
-                        <h3 class="font-headline text-lg font-bold">{{ $item->title }}</h3>
+                        <h3 class="font-headline text-lg font-bold">
+                            <a href="{{ $item->url ?? '#' }}" @if(isset($item->url) && $item->url) target="_blank" rel="noopener" @endif class="hover:text-primary transition-colors">{{ $item->title }}</a>
+                        </h3>
                         <p class="text-sm text-on-surface-variant mt-2">{{ $item->excerpt }}</p>
                     </article>
                 @empty
