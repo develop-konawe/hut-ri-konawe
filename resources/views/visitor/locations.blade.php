@@ -25,21 +25,25 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @foreach ($locations as $location)
-            <article class="glass-panel rounded-[2rem] p-6 flex flex-col">
+            <article class="glass-panel rounded-[2rem] p-6 flex flex-col h-full">
                 <span class="px-3 py-1 rounded-full bg-secondary-container text-secondary text-xs font-bold self-start">{{ strtoupper($location->type) }}</span>
                 <h2 class="font-headline text-2xl font-bold mt-4">{{ $location->name }}</h2>
-                <p class="text-on-surface-variant mt-2 flex-grow">{{ Str::limit($location->description, 120) }}</p>
+                <p class="text-on-surface-variant mt-2 text-sm flex-grow">{{ Str::limit($location->description, 120) }}</p>
                 
                 <div class="mt-5 text-sm space-y-2">
                     <p class="flex items-center gap-2"><span class="material-symbols-outlined text-[18px] text-primary">schedule</span> <strong>Waktu:</strong> {{ $location->activity_at?->translatedFormat('d F Y H:i') ?? 'Menyusul' }}</p>
                     <p class="flex items-center gap-2"><span class="material-symbols-outlined text-[18px] text-primary">location_on</span> <strong>Lokasi:</strong> {{ $location->address }}</p>
                 </div>
 
-                <div class="mt-6 pt-4 border-t border-outline-variant/30 flex flex-col gap-3">
-                    <button type="button" onclick="openEventModal('activity-modal-{{ $location->id }}')" class="bg-surface-container-high text-primary hover:bg-surface-variant text-center rounded-full px-5 py-3 font-bold transition-colors">Detail Kegiatan</button>
-                    
+                <div class="mt-4 pt-4 border-t border-outline-variant/30 flex justify-between items-center">
+                    <button type="button" onclick="openEventModal('activity-modal-{{ $location->id }}')" class="text-primary font-bold text-sm flex items-center gap-1 hover:text-primary-container transition-colors">
+                        <span class="material-symbols-outlined text-[18px]">info</span> Detail Kegiatan
+                    </button>
+                </div>
+                
+                <div class="mt-4">
                     @if($location->is_registration_open && (!$location->registration_deadline || now()->isBefore($location->registration_deadline)))
-                        <a href="{{ route('visitor.activity_registration.create', $location) }}" class="bg-primary hover:bg-primary-container text-white text-center rounded-full px-5 py-3 font-bold transition-colors">Daftar Hadir</a>
+                        <a href="{{ route('visitor.activity_registration.create', $location) }}" class="block w-full bg-primary-container hover:opacity-90 text-white text-center rounded-full px-5 py-3 font-bold transition-opacity">Daftar Hadir</a>
                     @endif
                 </div>
             </article>

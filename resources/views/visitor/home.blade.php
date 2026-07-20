@@ -249,10 +249,10 @@
     </div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         @forelse ($competitions as $competition)
-            <article class="glass-panel rounded-2xl p-5 border-t-4 border-primary">
+            <article class="glass-panel rounded-2xl p-5 border-t-4 border-primary flex flex-col h-full">
                 <span class="px-3 py-1 rounded-full bg-secondary-container text-secondary text-xs font-bold self-start">{{ strtoupper($competition->category) }}</span>
                 <h3 class="font-headline text-xl font-bold text-primary mt-3">{{ $competition->name }}</h3>
-                <p class="text-on-surface-variant mt-2 text-sm">{{ Str::limit($competition->description, 100) }}</p>
+                <p class="text-on-surface-variant mt-2 text-sm flex-grow">{{ Str::limit($competition->description, 100) }}</p>
                 @if($competition->starts_at)
                     <p class="text-sm mt-3 font-semibold text-secondary flex items-center gap-1">
                         <span class="material-symbols-outlined text-[16px]">event</span> 
