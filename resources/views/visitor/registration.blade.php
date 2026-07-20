@@ -76,7 +76,17 @@
                             <label class="font-bold text-sm">Alamat</label>
                             <textarea name="address" rows="4" class="mt-2 w-full rounded-xl border-outline-variant bg-white/80">{{ old('address') }}</textarea>
                         </div>
-                        <button class="bg-primary-container text-white px-8 py-4 rounded-full font-bold shadow-lg">Kirim Pendaftaran</button>
+                        <div class="pt-2">
+                            <label class="font-bold text-sm block mb-3">Kode Keamanan</label>
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+                                <div class="bg-white p-1 rounded-xl border border-outline-variant shadow-sm shrink-0">
+                                    {!! captcha_img('flat') !!}
+                                </div>
+                                <input name="captcha" type="text" class="w-full rounded-xl border-outline-variant bg-white/80" placeholder="Ketik karakter gambar..." required>
+                            </div>
+                            @error('captcha') <p class="text-primary text-sm mt-1 font-bold">{{ $message }}</p> @enderror
+                        </div>
+                        <button class="bg-primary-container text-white px-8 py-4 rounded-full font-bold shadow-lg mt-4">Kirim Pendaftaran</button>
                     </form>
                 </div>
             </div>

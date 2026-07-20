@@ -20,7 +20,7 @@ class HomeController extends Controller
     public function competitions(): View
     {
         return view('visitor.competitions', [
-            'competitions' => Competition::query()->where('is_open', true)->orderBy('starts_at')->get(),
+            'competitions' => Competition::query()->where('is_open', true)->orderBy('starts_at')->paginate(12),
         ]);
     }
 

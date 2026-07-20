@@ -357,12 +357,11 @@
                 <h4 class="font-bold text-lg mb-3">Peta Lokasi</h4>
                 <div class="rounded-2xl overflow-hidden aspect-video bg-surface-container-high relative">
                     @if($location->latitude && $location->longitude)
-                        <iframe 
-                            class="absolute inset-0 w-full h-full border-0" 
-                            src="https://maps.google.com/maps?q={{ $location->latitude }},{{ $location->longitude }}&t=m&z=15&output=embed&iwloc=near" 
-                            allowfullscreen 
-                            loading="lazy">
-                        </iframe>
+                        <div id="map-activity-modal-{{ $location->id }}" 
+                             class="modal-map-container absolute inset-0 w-full h-full"
+                             data-lat="{{ $location->latitude }}"
+                             data-lng="{{ $location->longitude }}">
+                        </div>
                     @else
                         <div class="absolute inset-0 flex items-center justify-center text-on-surface-variant">
                             <span class="material-symbols-outlined text-4xl mr-2">map</span> Koordinat tidak tersedia
@@ -449,12 +448,11 @@
                 <h4 class="font-bold text-lg mb-3">Peta Lokasi</h4>
                 <div class="rounded-2xl overflow-hidden aspect-video bg-surface-container-high relative">
                     @if($competition->latitude && $competition->longitude)
-                        <iframe 
-                            class="absolute inset-0 w-full h-full border-0" 
-                            src="https://maps.google.com/maps?q={{ $competition->latitude }},{{ $competition->longitude }}&t=m&z=15&output=embed&iwloc=near" 
-                            allowfullscreen 
-                            loading="lazy">
-                        </iframe>
+                        <div id="map-competition-modal-{{ $competition->id }}" 
+                             class="modal-map-container absolute inset-0 w-full h-full"
+                             data-lat="{{ $competition->latitude }}"
+                             data-lng="{{ $competition->longitude }}">
+                        </div>
                     @else
                         <div class="absolute inset-0 flex items-center justify-center text-on-surface-variant">
                             <span class="material-symbols-outlined text-4xl mr-2">map</span> Koordinat tidak tersedia
@@ -636,7 +634,8 @@
     });
     showBanner(0);
 
-    // Modal Control Functions
+    const modalMaps = {};
+
     function openEventModal(modalId) {
         const modal = document.getElementById(modalId);
         if (modal) {
@@ -651,6 +650,43 @@
                 modalContent.classList.add('scale-100');
             });
             document.body.style.overflow = 'hidden';
+
+            const mapContainerId = 'map-' + modalId;
+            const mapContainer = document.getElementById(mapContainerId);
+            
+            if (mapContainer && !modalMaps[mapContainerId]) {
+                const lat = parseFloat(mapContainer.dataset.lat);
+                const lng = parseFloat(mapContainer.dataset.lng);
+                
+                if (!isNaN(lat) && !isNaN(lng) && typeof L !== 'undefined') {
+                    const map = L.map(mapContainerId, {
+                        center: [lat, lng],
+                        zoom: 16,
+                        scrollWheelZoom: false
+                    });
+                    
+                    L.tileLayer('https://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+                        maxZoom: 20,
+                        subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+                    }).addTo(map);
+
+                    const independenceIcon = L.divIcon({
+                        className: 'independence-marker',
+                        html: '<div class="independence-marker-pin"><span class="independence-marker-flag"></span></div>',
+                        iconSize: [36, 48],
+                        iconAnchor: [18, 48]
+                    });
+                    
+                    L.marker([lat, lng], {icon: independenceIcon}).addTo(map);
+                    modalMaps[mapContainerId] = map;
+                }
+            }
+
+            if (mapContainer && modalMaps[mapContainerId]) {
+                setTimeout(() => {
+                    modalMaps[mapContainerId].invalidateSize();
+                }, 300);
+            }
         }
     }
 
@@ -705,3 +741,72 @@
     setInterval(pollLivePerformances, 10000); // Poll setiap 10 detik
 </script>
 @endsection
+
+@push('styles')
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <style>
+        .independence-marker {
+            background: transparent;
+            border: 0;
+        }
+        .independence-marker-pin {
+            width: 36px;
+            height: 48px;
+            position: relative;
+            filter: drop-shadow(0 10px 18px rgba(65, 0, 3, .35));
+        }
+        .independence-marker-pin::before {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 0;
+            width: 34px;
+            height: 34px;
+            transform: translateX(-50%);
+            border-radius: 9999px;
+            background: #be0017;
+            border: 3px solid #ffffff;
+        }
+        .independence-marker-pin::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            width: 0;
+            height: 0;
+            transform: translateX(-50%);
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 18px solid #be0017;
+        }
+        .independence-marker-flag {
+            position: absolute;
+            left: 50%;
+            top: 17px;
+            width: 18px;
+            height: 13px;
+            transform: translate(-50%, -50%);
+            border-radius: 2px;
+            overflow: hidden;
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, .8);
+            z-index: 1;
+        }
+        .independence-marker-flag::before,
+        .independence-marker-flag::after {
+            content: "";
+            display: block;
+            height: 50%;
+        }
+        .independence-marker-flag::before {
+            background: #e62129;
+        }
+        .independence-marker-flag::after {
+            background: #ffffff;
+        }
+    </style>
+@endpush
+
+@push('scripts')
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+@endpush
+

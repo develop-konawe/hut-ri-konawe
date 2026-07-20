@@ -63,7 +63,7 @@ class LocationController extends Controller
     {
         $location->update($this->validated($request));
 
-        return to_route('admin.locations.index')->with('status', 'Lokasi kegiatan berhasil diperbarui.');
+        return to_route('admin.locations.index', ['page' => $request->query('page')])->with('status', 'Lokasi kegiatan berhasil diperbarui.');
     }
 
     /**

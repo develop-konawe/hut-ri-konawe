@@ -41,12 +41,13 @@
             <label class="block text-sm font-bold text-on-surface-variant mb-2">Peran (Role)</label>
             <select name="role" id="role-select" class="w-full bg-surface-variant/50 border-0 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none transition-all" required>
                 <option value="operator" {{ old('role') === 'operator' ? 'selected' : '' }}>Operator Lomba</option>
+                <option value="admin" {{ old('role') === 'admin' ? 'selected' : '' }}>Admin Konten</option>
                 <option value="superadmin" {{ old('role') === 'superadmin' ? 'selected' : '' }}>Super Admin</option>
             </select>
             @error('role') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
         </div>
 
-        <div id="competition-wrapper" class="{{ old('role') === 'superadmin' ? 'hidden' : '' }}">
+        <div id="competition-wrapper" class="{{ (old('role') === 'superadmin' || old('role') === 'admin') ? 'hidden' : '' }}">
             <label class="block text-sm font-bold text-on-surface-variant mb-2">Akses Lomba (Untuk Operator)</label>
             <select name="competition_id" id="competition-select" class="w-full bg-surface-variant/50 border-0 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none transition-all">
                 <option value="">-- Pilih Lomba --</option>
@@ -71,7 +72,7 @@
     document.getElementById('role-select').addEventListener('change', function() {
         const compWrapper = document.getElementById('competition-wrapper');
         const compSelect = document.getElementById('competition-select');
-        if (this.value === 'superadmin') {
+        if (this.value === 'superadmin' || this.value === 'admin') {
             compWrapper.classList.add('hidden');
             compSelect.removeAttribute('required');
             compSelect.value = '';

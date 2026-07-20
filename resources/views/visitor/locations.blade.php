@@ -95,12 +95,11 @@
                 <h4 class="font-bold text-lg mb-3">Peta Lokasi</h4>
                 <div class="rounded-2xl overflow-hidden aspect-video bg-surface-container-high relative">
                     @if($location->latitude && $location->longitude)
-                        <iframe 
-                            class="absolute inset-0 w-full h-full border-0" 
-                            src="https://maps.google.com/maps?q={{ $location->latitude }},{{ $location->longitude }}&t=m&z=15&output=embed&iwloc=near" 
-                            allowfullscreen 
-                            loading="lazy">
-                        </iframe>
+                        <div id="map-activity-modal-{{ $location->id }}" 
+                             class="modal-map-container absolute inset-0 w-full h-full"
+                             data-lat="{{ $location->latitude }}"
+                             data-lng="{{ $location->longitude }}">
+                        </div>
                     @else
                         <div class="absolute inset-0 flex items-center justify-center text-on-surface-variant">
                             <span class="material-symbols-outlined text-4xl mr-2">map</span> Koordinat tidak tersedia
@@ -169,17 +168,17 @@
         #public-locations-map .leaflet-popup-content {
             margin: 12px 14px;
         }
-        #public-locations-map .independence-marker {
+        .independence-marker {
             background: transparent;
             border: 0;
         }
-        #public-locations-map .independence-marker-pin {
+        .independence-marker-pin {
             width: 36px;
             height: 48px;
             position: relative;
             filter: drop-shadow(0 10px 18px rgba(65, 0, 3, .35));
         }
-        #public-locations-map .independence-marker-pin::before {
+        .independence-marker-pin::before {
             content: "";
             position: absolute;
             left: 50%;
@@ -191,7 +190,7 @@
             background: #be0017;
             border: 3px solid #ffffff;
         }
-        #public-locations-map .independence-marker-pin::after {
+        .independence-marker-pin::after {
             content: "";
             position: absolute;
             left: 50%;
@@ -203,7 +202,7 @@
             border-right: 10px solid transparent;
             border-top: 18px solid #be0017;
         }
-        #public-locations-map .independence-marker-flag {
+        .independence-marker-flag {
             position: absolute;
             left: 50%;
             top: 17px;
@@ -215,16 +214,16 @@
             box-shadow: 0 0 0 1px rgba(255, 255, 255, .8);
             z-index: 1;
         }
-        #public-locations-map .independence-marker-flag::before,
-        #public-locations-map .independence-marker-flag::after {
+        .independence-marker-flag::before,
+        .independence-marker-flag::after {
             content: "";
             display: block;
             height: 50%;
         }
-        #public-locations-map .independence-marker-flag::before {
+        .independence-marker-flag::before {
             background: #e62129;
         }
-        #public-locations-map .independence-marker-flag::after {
+        .independence-marker-flag::after {
             background: #ffffff;
         }
     </style>
@@ -300,6 +299,8 @@
             setTimeout(() => map.invalidateSize(), 250);
         });
 
+        const modalMaps = {};
+
         function openEventModal(modalId) {
             const modal = document.getElementById(modalId);
             if (modal) {
@@ -313,6 +314,43 @@
                     modalContent.classList.add('scale-100');
                 });
                 document.body.style.overflow = 'hidden';
+
+                const mapContainerId = 'map-' + modalId;
+                const mapContainer = document.getElementById(mapContainerId);
+                
+                if (mapContainer && !modalMaps[mapContainerId]) {
+                    const lat = parseFloat(mapContainer.dataset.lat);
+                    const lng = parseFloat(mapContainer.dataset.lng);
+                    
+                    if (!isNaN(lat) && !isNaN(lng)) {
+                        const map = L.map(mapContainerId, {
+                            center: [lat, lng],
+                            zoom: 16,
+                            scrollWheelZoom: false
+                        });
+                        
+                        L.tileLayer('https://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+                            maxZoom: 20,
+                            subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+                        }).addTo(map);
+
+                        const independenceIcon = L.divIcon({
+                            className: 'independence-marker',
+                            html: '<div class="independence-marker-pin"><span class="independence-marker-flag"></span></div>',
+                            iconSize: [36, 48],
+                            iconAnchor: [18, 48]
+                        });
+                        
+                        L.marker([lat, lng], {icon: independenceIcon}).addTo(map);
+                        modalMaps[mapContainerId] = map;
+                    }
+                }
+
+                if (mapContainer && modalMaps[mapContainerId]) {
+                    setTimeout(() => {
+                        modalMaps[mapContainerId].invalidateSize();
+                    }, 300);
+                }
             }
         }
 

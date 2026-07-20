@@ -35,6 +35,10 @@ class ActivityRegistrationController extends Controller
             'phone' => ['required', 'string', 'max:32'],
             'email' => ['nullable', 'email', 'max:255'],
             'institution' => ['nullable', 'string', 'max:255'],
+            'captcha' => ['required', 'captcha'],
+        ], [
+            'captcha.required' => 'Kode keamanan wajib diisi.',
+            'captcha.captcha' => 'Kode keamanan tidak sesuai.',
         ]);
 
         $location->registrations()->create(array_merge($validated, [

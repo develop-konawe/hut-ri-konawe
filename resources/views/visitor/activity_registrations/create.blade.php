@@ -58,6 +58,17 @@
                 @error('email') <p class="text-primary text-sm mt-1 font-semibold">{{ $message }}</p> @enderror
             </div>
 
+            <div class="pt-2">
+                <label class="font-bold text-sm block mb-3">Kode Keamanan <span class="text-primary">*</span></label>
+                <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+                    <div class="bg-white p-1 rounded-xl border border-outline-variant shadow-sm shrink-0">
+                        {!! captcha_img('flat') !!}
+                    </div>
+                    <input name="captcha" type="text" class="w-full rounded-xl border-surface-variant focus:border-primary focus:ring focus:ring-primary/20 p-3" placeholder="Ketik karakter gambar..." required>
+                </div>
+                @error('captcha') <p class="text-primary text-sm mt-1 font-semibold">{{ $message }}</p> @enderror
+            </div>
+
             <div class="pt-4">
                 <button type="submit" class="w-full bg-primary hover:bg-primary-container text-white px-6 py-4 rounded-xl font-bold text-lg transition-colors flex items-center justify-center gap-2">
                     <span class="material-symbols-outlined">send</span> Kirim Pendaftaran Kehadiran

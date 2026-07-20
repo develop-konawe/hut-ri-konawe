@@ -28,11 +28,11 @@ Route::get('/live-performances', [HomeController::class, 'livePerformances'])->n
 Route::get('/media/google-drive/{fileId}', GoogleDriveMediaController::class)->name('visitor.media.google-drive');
 Route::get('/pendaftaran', [RegistrationController::class, 'create'])->name('visitor.registration.create');
 Route::get('/pendaftaran/{competition:slug}', [RegistrationController::class, 'create'])->name('visitor.registration.competition');
-Route::post('/pendaftaran', [RegistrationController::class, 'store'])->name('visitor.registration.store');
+Route::post('/pendaftaran', [RegistrationController::class, 'store'])->middleware('throttle:10,1')->name('visitor.registration.store');
 Route::get('/pendaftaran/berhasil', [RegistrationController::class, 'success'])->name('visitor.registration.success');
 
 Route::get('/kegiatan/{location}/daftar', [VisitorActivityRegistrationController::class, 'create'])->name('visitor.activity_registration.create');
-Route::post('/kegiatan/{location}/daftar', [VisitorActivityRegistrationController::class, 'store'])->name('visitor.activity_registration.store');
+Route::post('/kegiatan/{location}/daftar', [VisitorActivityRegistrationController::class, 'store'])->middleware('throttle:10,1')->name('visitor.activity_registration.store');
 Route::get('/kegiatan/daftar/berhasil', [VisitorActivityRegistrationController::class, 'success'])->name('visitor.activity_registration.success');
 
 Route::middleware('guest')->group(function (): void {
@@ -43,26 +43,27 @@ Route::post('/logout', [LoginController::class, 'destroy'])->middleware('auth')-
 
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Middleware\IsSuperAdmin;
+use App\Http\Middleware\IsAdmin;
+use App\Http\Middleware\IsOperatorOrSuperAdmin;
 
 Route::prefix('admin')->name('admin.')->middleware('auth')->group(function (): void {
     // Shared Routes (Super Admin & Operator)
     Route::get('/', DashboardController::class)->name('dashboard');
     
-    // Registrations (Operators manage only their assigned competition)
-    Route::resource('registrations', AdminRegistrationController::class)->except(['create', 'store', 'show']);
-    Route::patch('registrations/{registration}/status', [AdminRegistrationController::class, 'updateStatus'])->name('registrations.status');
+    // Registrations & Performances (Super Admin & Operator only, no Admin)
+    Route::middleware([IsOperatorOrSuperAdmin::class])->group(function (): void {
+        Route::resource('registrations', AdminRegistrationController::class)->except(['create', 'store', 'show']);
+        Route::patch('registrations/{registration}/status', [AdminRegistrationController::class, 'updateStatus'])->name('registrations.status');
 
-    // Performances
-    Route::post('registrations/{registration}/performances', [PerformanceController::class, 'store'])->name('registrations.performances.store');
-    Route::put('performances/{performance}', [PerformanceController::class, 'update'])->name('performances.update');
-    Route::patch('performances/{performance}', [PerformanceController::class, 'update'])->name('performances.status');
-    Route::delete('performances/{performance}', [PerformanceController::class, 'destroy'])->name('performances.destroy');
+        Route::post('registrations/{registration}/performances', [PerformanceController::class, 'store'])->name('registrations.performances.store');
+        Route::put('performances/{performance}', [PerformanceController::class, 'update'])->name('performances.update');
+        Route::patch('performances/{performance}', [PerformanceController::class, 'update'])->name('performances.status');
+        Route::delete('performances/{performance}', [PerformanceController::class, 'destroy'])->name('performances.destroy');
+    });
     
-    // Super Admin Only Routes
-    Route::middleware([IsSuperAdmin::class])->group(function (): void {
-        Route::resource('users', UserController::class)->except(['show']);
+    // Admin & Super Admin Routes
+    Route::middleware([IsAdmin::class])->group(function (): void {
         Route::resource('banners', BannerController::class);
-        Route::resource('competitions', CompetitionController::class);
         
         Route::resource('locations', LocationController::class);
         Route::get('locations/{location}/registrations', [AdminActivityRegistrationController::class, 'index'])->name('locations.registrations.index');
@@ -71,6 +72,13 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function (): v
         
         Route::resource('videos', VideoController::class);
         Route::resource('live_streamings', AdminLiveStreamingController::class);
+    });
+
+    // Super Admin Only Routes
+    Route::middleware([IsSuperAdmin::class])->group(function (): void {
+        Route::resource('users', UserController::class)->except(['show']);
+        Route::resource('competitions', CompetitionController::class);
+        Route::patch('competitions/{competition}/status', [CompetitionController::class, 'updateStatus'])->name('competitions.status');
         Route::get('settings', [SettingController::class, 'edit'])->name('settings.edit');
         Route::put('settings', [SettingController::class, 'update'])->name('settings.update');
     });

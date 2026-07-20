@@ -4,7 +4,7 @@
 @section('heading', $competition->exists ? 'Edit Lomba' : 'Buat Lomba Baru')
 
 @section('content')
-<form method="POST" action="{{ $competition->exists ? route('admin.competitions.update', $competition) : route('admin.competitions.store') }}" class="glass-panel rounded-[2rem] p-8 max-w-4xl space-y-5">
+<form method="POST" action="{{ $competition->exists ? route('admin.competitions.update', ['competition' => $competition, 'page' => request('page')]) : route('admin.competitions.store') }}" class="glass-panel rounded-[2rem] p-8 max-w-4xl space-y-5">
     @csrf
     @if ($competition->exists)
         @method('PUT')
@@ -76,7 +76,7 @@
     </div>
     <div class="flex gap-3">
         <button class="bg-primary-container text-white px-6 py-3 rounded-full font-bold">Simpan</button>
-        <a class="bg-surface-container-high px-6 py-3 rounded-full font-bold" href="{{ route('admin.competitions.index') }}">Batal</a>
+        <a class="bg-surface-container-high px-6 py-3 rounded-full font-bold" href="{{ route('admin.competitions.index', ['page' => request('page')]) }}">Batal</a>
     </div>
 </form>
 @endsection

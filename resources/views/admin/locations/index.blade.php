@@ -16,7 +16,6 @@
             <th class="py-3">Nama</th>
             <th class="py-3">Tipe</th>
             <th class="py-3">Alamat</th>
-            <th class="py-3">Koordinat</th>
             <th class="py-3"></th>
         </tr>
         </thead>
@@ -26,14 +25,13 @@
                 <td class="py-4 font-semibold">{{ $location->name }}</td>
                 <td class="py-4">{{ $location->type }}</td>
                 <td class="py-4">{{ $location->address }}</td>
-                <td class="py-4">{{ $location->latitude }}, {{ $location->longitude }}</td>
                 <td class="py-4 flex gap-3 justify-end items-center">
                     @if($location->is_registration_open || $location->registrations()->count() > 0)
                         <a class="text-secondary hover:text-primary font-bold flex items-center gap-1 text-sm" href="{{ route('admin.locations.registrations.index', $location) }}">
                             <span class="material-symbols-outlined text-[18px]">group</span> Pendaftar ({{ $location->registrations()->count() }})
                         </a>
                     @endif
-                    <a class="text-primary font-bold" href="{{ route('admin.locations.edit', $location) }}">Edit</a>
+                    <a class="text-primary font-bold" href="{{ route('admin.locations.edit', ['location' => $location, 'page' => request('page')]) }}">Edit</a>
                     <form method="POST" action="{{ route('admin.locations.destroy', $location) }}" onsubmit="return confirm('Hapus lokasi ini?')">
                         @csrf
                         @method('DELETE')

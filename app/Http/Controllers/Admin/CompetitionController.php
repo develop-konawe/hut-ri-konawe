@@ -64,7 +64,28 @@ class CompetitionController extends Controller
     {
         $competition->update($this->validated($request, $competition));
 
-        return to_route('admin.competitions.index')->with('status', 'Jadwal lomba berhasil diperbarui.');
+        return to_route('admin.competitions.index', ['page' => $request->query('page')])->with('status', 'Jadwal lomba berhasil diperbarui.');
+    }
+
+    /**
+     * Update the status of the specified resource.
+     */
+    public function updateStatus(Request $request, Competition $competition)
+    {
+        $validated = $request->validate([
+            'is_open' => ['required', 'boolean'],
+        ]);
+
+        $competition->update(['is_open' => $validated['is_open']]);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Status lomba berhasil diperbarui.',
+                'is_open' => $competition->is_open,
+            ]);
+        }
+
+        return back()->with('status', 'Status lomba berhasil diperbarui.');
     }
 
     /**

@@ -41,6 +41,10 @@ class RegistrationController extends Controller
             'email' => ['nullable', 'email', 'max:255'],
             'institution' => ['nullable', 'string', 'max:255'],
             'address' => ['nullable', 'string', 'max:1000'],
+            'captcha' => ['required', 'captcha'],
+        ], [
+            'captcha.required' => 'Kode keamanan wajib diisi.',
+            'captcha.captcha' => 'Kode keamanan tidak sesuai.',
         ]);
 
         $competition = Competition::query()->findOrFail($validated['competition_id']);

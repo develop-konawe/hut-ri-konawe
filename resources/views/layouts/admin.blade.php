@@ -6,6 +6,7 @@
     <title>@yield('title', 'HUT RI ke-81 Kabupaten Konawe Admin')</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script>
         tailwind.config = {theme:{extend:{colors:{primary:'#be0017','primary-container':'#e62129',secondary:'#515d84','secondary-container':'#c4d0fd',surface:'#f8f9fa','surface-container':'#edeeef','surface-container-low':'#f3f4f5','surface-container-high':'#e7e8e9','surface-variant':'#e1e3e4','on-surface':'#191c1d','on-surface-variant':'#5d3f3c'},fontFamily:{body:['Inter'],headline:['Montserrat']}}}}
     </script>
@@ -66,13 +67,17 @@
         <a title="Lomba" class="admin-nav-link {{ request()->routeIs('admin.competitions.*') ? 'text-primary font-bold border-r-4 border-primary bg-secondary-container/20' : 'text-on-surface-variant' }} flex items-center gap-3 p-3 rounded-l-lg" href="{{ route('admin.competitions.index') }}"><span class="material-symbols-outlined">event_available</span><span class="sidebar-label">Lomba</span></a>
         @endif
         
+        @if(!auth()->user()?->isAdmin())
         <a title="Peserta Lomba" class="admin-nav-link {{ request()->routeIs('admin.registrations.*') ? 'text-primary font-bold border-r-4 border-primary bg-secondary-container/20' : 'text-on-surface-variant' }} flex items-center gap-3 p-3 rounded-l-lg" href="{{ route('admin.registrations.index') }}"><span class="material-symbols-outlined">app_registration</span><span class="sidebar-label">Peserta Lomba</span></a>
+        @endif
         
-        @if(auth()->user()?->isSuperAdmin())
+        @if(auth()->user()?->isAdminOrSuperAdmin())
         <a title="Kegiatan" class="admin-nav-link {{ request()->routeIs('admin.locations.*') ? 'text-primary font-bold border-r-4 border-primary bg-secondary-container/20' : 'text-on-surface-variant' }} flex items-center gap-3 p-3 rounded-l-lg" href="{{ route('admin.locations.index') }}"><span class="material-symbols-outlined">map</span><span class="sidebar-label">Kegiatan</span></a>
         <a title="Banner" class="admin-nav-link {{ request()->routeIs('admin.banners.*') ? 'text-primary font-bold border-r-4 border-primary bg-secondary-container/20' : 'text-on-surface-variant' }} flex items-center gap-3 p-3 rounded-l-lg" href="{{ route('admin.banners.index') }}"><span class="material-symbols-outlined">imagesmode</span><span class="sidebar-label">Banner</span></a>
         <a title="Video" class="admin-nav-link {{ request()->routeIs('admin.videos.*') ? 'text-primary font-bold border-r-4 border-primary bg-secondary-container/20' : 'text-on-surface-variant' }} flex items-center gap-3 p-3 rounded-l-lg" href="{{ route('admin.videos.index') }}"><span class="material-symbols-outlined">play_circle</span><span class="sidebar-label">Video</span></a>
         <a title="Live Streaming" class="admin-nav-link {{ request()->routeIs('admin.live_streamings.*') ? 'text-primary font-bold border-r-4 border-primary bg-secondary-container/20' : 'text-on-surface-variant' }} flex items-center gap-3 p-3 rounded-l-lg" href="{{ route('admin.live_streamings.index') }}"><span class="material-symbols-outlined">sensors</span><span class="sidebar-label">Live Streaming</span></a>
+        @endif
+        @if(auth()->user()?->isSuperAdmin())
         <a title="Manajemen Pengguna" class="admin-nav-link {{ request()->routeIs('admin.users.*') ? 'text-primary font-bold border-r-4 border-primary bg-secondary-container/20' : 'text-on-surface-variant' }} flex items-center gap-3 p-3 rounded-l-lg" href="{{ route('admin.users.index') }}"><span class="material-symbols-outlined">group</span><span class="sidebar-label">Pengguna</span></a>
         <a title="Pengaturan" class="admin-nav-link {{ request()->routeIs('admin.settings.*') ? 'text-primary font-bold border-r-4 border-primary bg-secondary-container/20' : 'text-on-surface-variant' }} flex items-center gap-3 p-3 rounded-l-lg" href="{{ route('admin.settings.edit') }}"><span class="material-symbols-outlined">settings</span><span class="sidebar-label">Pengaturan</span></a>
         @endif
@@ -118,6 +123,20 @@
 
         setCollapsed(localStorage.getItem('adminSidebarCollapsed') === 'true');
         toggle?.addEventListener('click', () => setCollapsed(! body.classList.contains('sidebar-collapsed')));
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/id.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        flatpickr("input[type='datetime-local']", {
+            enableTime: true,
+            dateFormat: "Y-m-d\\TH:i",
+            altInput: true,
+            altFormat: "d F Y H:i",
+            time_24hr: true,
+            locale: "id"
+        });
     });
 </script>
 </body>

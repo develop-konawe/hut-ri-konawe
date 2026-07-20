@@ -4,7 +4,7 @@
 @section('heading', $location->exists ? 'Edit Lokasi Geotag' : 'Tambah Lokasi Geotag')
 
 @section('content')
-<form method="POST" action="{{ $location->exists ? route('admin.locations.update', $location) : route('admin.locations.store') }}" class="glass-panel rounded-[2rem] p-8 max-w-4xl space-y-5">
+<form method="POST" action="{{ $location->exists ? route('admin.locations.update', ['location' => $location, 'page' => request('page')]) : route('admin.locations.store') }}" class="glass-panel rounded-[2rem] p-8 max-w-4xl space-y-5">
     @csrf
     @if ($location->exists)
         @method('PUT')
@@ -69,7 +69,7 @@
     @endif
     <div class="flex gap-3">
         <button class="bg-primary-container text-white px-6 py-3 rounded-full font-bold">Simpan</button>
-        <a class="bg-surface-container-high px-6 py-3 rounded-full font-bold" href="{{ route('admin.locations.index') }}">Batal</a>
+        <a class="bg-surface-container-high px-6 py-3 rounded-full font-bold" href="{{ route('admin.locations.index', ['page' => request('page')]) }}">Batal</a>
     </div>
 </form>
 @endsection
