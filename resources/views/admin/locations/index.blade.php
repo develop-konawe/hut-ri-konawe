@@ -6,13 +6,21 @@
 @section('content')
 <div class="flex items-center justify-between mb-6">
     <p class="text-on-surface-variant">Kelola titik lokasi kegiatan seni, olahraga, upacara, dan umum.</p>
-    <div class="flex gap-2">
+    <div class="flex flex-wrap items-center justify-end gap-3 mt-4 md:mt-0">
+        <form action="{{ route('admin.locations.index') }}" method="GET" class="w-48 md:w-64">
+            <div class="flex items-center w-full bg-white/80 backdrop-blur-md border border-gray-200 rounded-full overflow-hidden shadow-sm p-1 focus-within:ring-2 focus-within:ring-primary/50 focus-within:border-primary">
+                <input type="search" name="search" value="{{ request('search') }}" placeholder="Cari kegiatan..." class="w-full bg-transparent text-sm px-4 py-2 rounded-full placeholder:text-gray-500" style="border: none !important; box-shadow: none !important; outline: none !important; background-color: transparent !important;">
+                <button type="submit" class="bg-primary text-white w-9 h-9 flex-shrink-0 rounded-full flex items-center justify-center hover:bg-primary-container transition-colors shadow-sm">
+                    <span class="material-symbols-outlined text-[18px]">search</span>
+                </button>
+            </div>
+        </form>
         <form id="bulkDeleteForm" action="{{ route('admin.locations.bulk-destroy') }}" method="POST" class="hidden">
             @csrf
             @method('DELETE')
         </form>
         <button type="button" id="bulkDeleteBtn" class="bg-red-100 text-red-700 px-5 py-3 rounded-full font-bold shadow hidden hover:bg-red-600 hover:text-white transition-colors" onclick="submitBulkDelete()">Hapus Terpilih</button>
-        <a class="bg-primary-container text-white px-5 py-3 rounded-full font-bold shadow" href="{{ route('admin.locations.create') }}">Tambah Lokasi</a>
+        <a class="bg-primary-container text-white px-5 py-3 rounded-full font-bold shadow whitespace-nowrap" href="{{ route('admin.locations.create') }}">Tambah Lokasi</a>
     </div>
 </div>
 

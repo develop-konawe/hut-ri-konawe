@@ -13,10 +13,21 @@ class LocationController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): View
+    public function index(Request $request): View
     {
+        $search = $request->input('search');
+        
+        $locations = ActivityLocation::query()
+            ->when($search, function ($query, $search) {
+                $query->where('name', 'like', "%{$search}%");
+            })
+            ->orderByRaw('CASE WHEN activity_at >= ? THEN 0 ELSE 1 END', [now()->startOfDay()])
+            ->orderBy('activity_at', 'asc')
+            ->paginate(10)
+            ->withQueryString();
+
         return view('admin.locations.index', [
-            'locations' => ActivityLocation::query()->orderByRaw('CASE WHEN activity_at >= ? THEN 0 ELSE 1 END', [now()->startOfDay()])->orderBy('activity_at', 'asc')->paginate(10),
+            'locations' => $locations,
         ]);
     }
 

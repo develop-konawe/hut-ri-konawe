@@ -9,6 +9,7 @@ use App\Models\IndependenceVideo;
 use App\Models\LiveStreaming;
 use App\Services\HomePageService;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
@@ -17,17 +18,41 @@ class HomeController extends Controller
         return view('visitor.home', $homePageService->getData());
     }
 
-    public function competitions(): View
+    public function competitions(Request $request): View
     {
+        $search = $request->input('search');
+        
+        $competitions = Competition::query()
+            ->where('is_open', true)
+            ->when($search, function ($query, $search) {
+                $query->where('name', 'like', "%{$search}%");
+            })
+            ->orderByRaw('CASE WHEN starts_at >= ? THEN 0 ELSE 1 END', [now()->startOfDay()])
+            ->orderBy('starts_at')
+            ->paginate(12)
+            ->withQueryString();
+
         return view('visitor.competitions', [
-            'competitions' => Competition::query()->where('is_open', true)->orderByRaw('CASE WHEN starts_at >= ? THEN 0 ELSE 1 END', [now()->startOfDay()])->orderBy('starts_at')->paginate(12),
+            'competitions' => $competitions,
+            'search' => $search,
         ]);
     }
 
-    public function locations(): View
+    public function locations(Request $request): View
     {
+        $search = $request->input('search');
+        
+        $locations = ActivityLocation::query()
+            ->when($search, function ($query, $search) {
+                $query->where('name', 'like', "%{$search}%");
+            })
+            ->orderByRaw('CASE WHEN activity_at >= ? THEN 0 ELSE 1 END', [now()->startOfDay()])
+            ->orderBy('activity_at')
+            ->get();
+
         return view('visitor.locations', [
-            'locations' => ActivityLocation::query()->orderByRaw('CASE WHEN activity_at >= ? THEN 0 ELSE 1 END', [now()->startOfDay()])->orderBy('activity_at')->get(),
+            'locations' => $locations,
+            'search' => $search,
         ]);
     }
 

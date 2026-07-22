@@ -14,10 +14,22 @@ class CompetitionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): View
+    public function index(Request $request): View
     {
+        $search = $request->input('search');
+        
+        $competitions = Competition::query()
+            ->withCount('registrations')
+            ->when($search, function ($query, $search) {
+                $query->where('name', 'like', "%{$search}%");
+            })
+            ->orderByRaw('CASE WHEN starts_at >= ? THEN 0 ELSE 1 END', [now()->startOfDay()])
+            ->orderBy('starts_at', 'asc')
+            ->paginate(10)
+            ->withQueryString();
+
         return view('admin.competitions.index', [
-            'competitions' => Competition::query()->withCount('registrations')->orderByRaw('CASE WHEN starts_at >= ? THEN 0 ELSE 1 END', [now()->startOfDay()])->orderBy('starts_at', 'asc')->paginate(10),
+            'competitions' => $competitions,
         ]);
     }
 

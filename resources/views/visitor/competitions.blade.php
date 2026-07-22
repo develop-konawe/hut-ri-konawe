@@ -17,8 +17,26 @@
 @endphp
 
 <section class="max-w-container-max mx-auto px-gutter py-10">
-    <h1 class="font-headline text-4xl font-extrabold text-primary mb-3">Jadwal Lomba</h1>
-    <p class="text-secondary mb-8">Daftar kegiatan seni, olahraga, dan umum yang dibuka untuk pendaftaran peserta.</p>
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+        <div>
+            <h1 class="font-headline text-4xl font-extrabold text-primary mb-3">Jadwal Lomba</h1>
+            <p class="text-secondary">Daftar kegiatan seni, olahraga, dan umum yang dibuka untuk pendaftaran peserta.</p>
+        </div>
+        <form action="{{ route('visitor.competitions') }}" method="GET" class="w-full md:w-80">
+            <div class="flex items-center w-full bg-white border border-gray-200 rounded-full overflow-hidden shadow-sm p-1 focus-within:ring-2 focus-within:ring-primary/50 focus-within:border-primary">
+                <input type="search" name="search" value="{{ request('search') }}" placeholder="Cari lomba..." class="w-full bg-transparent text-sm px-4 py-2 rounded-full placeholder:text-gray-400" style="border: none !important; box-shadow: none !important; outline: none !important; background-color: transparent !important;">
+                <button type="submit" class="bg-primary text-white w-9 h-9 flex-shrink-0 rounded-full flex items-center justify-center hover:bg-primary-container transition-colors shadow-sm">
+                    <span class="material-symbols-outlined text-[18px]">search</span>
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    @if(request()->filled('search'))
+        <div class="mb-6 -mt-2">
+            <p class="text-sm text-secondary">Menampilkan hasil pencarian untuk: <span class="font-bold text-primary">"{{ request('search') }}"</span></p>
+        </div>
+    @endif
     @if ($registrationSetting->isRegistrationClosed())
         <div class="glass-panel rounded-2xl p-5 text-primary font-semibold mb-8 flex items-center gap-3">
             <span class="material-symbols-outlined">info</span>
