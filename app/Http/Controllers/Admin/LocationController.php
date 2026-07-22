@@ -16,7 +16,7 @@ class LocationController extends Controller
     public function index(): View
     {
         return view('admin.locations.index', [
-            'locations' => ActivityLocation::query()->latest('activity_at')->paginate(10),
+            'locations' => ActivityLocation::query()->orderBy('activity_at', 'asc')->paginate(10),
         ]);
     }
 

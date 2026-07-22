@@ -17,7 +17,7 @@ class CompetitionController extends Controller
     public function index(): View
     {
         return view('admin.competitions.index', [
-            'competitions' => Competition::query()->withCount('registrations')->latest('starts_at')->paginate(10),
+            'competitions' => Competition::query()->withCount('registrations')->orderBy('starts_at', 'asc')->paginate(10),
         ]);
     }
 
