@@ -35,10 +35,10 @@
         </a>
         <nav class="hidden md:flex gap-7 items-center text-sm font-semibold">
             <a class="{{ request()->routeIs('visitor.home') ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary' }} py-6" href="{{ route('visitor.home') }}">Beranda</a>
-            <a class="{{ request()->routeIs('visitor.news') ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary' }} py-6" href="{{ route('visitor.news') }}">Berita</a>
-            <a class="{{ request()->routeIs('visitor.competitions') ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary' }} py-6" href="{{ route('visitor.competitions') }}">Lomba</a>
             <a class="{{ request()->routeIs('visitor.locations') ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary' }} py-6" href="{{ route('visitor.locations') }}">Kegiatan</a>
+            <a class="{{ request()->routeIs('visitor.competitions') ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary' }} py-6" href="{{ route('visitor.competitions') }}">Lomba</a>
             <a class="{{ request()->routeIs('visitor.videos') ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary' }} py-6" href="{{ route('visitor.videos') }}">Video</a>
+            <a class="{{ request()->routeIs('visitor.news') ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary' }} py-6" href="{{ route('visitor.news') }}">Berita</a>
             <a class="{{ request()->routeIs('visitor.live_streamings') ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary' }} py-6 flex items-center" href="{{ route('visitor.live_streamings') }}">
                 Live
                 <span class="relative flex h-2 w-2 ml-1.5 mb-2">
@@ -68,21 +68,21 @@
         <span class="material-symbols-outlined" @if(request()->routeIs('visitor.home')) style="font-variation-settings: 'FILL' 1;" @endif>home</span>
         <span class="text-[10px] font-label-bold">Beranda</span>
     </a>
-    <a class="flex flex-col items-center justify-center {{ request()->routeIs('visitor.news') ? 'bg-primary-container text-on-primary-container rounded-full px-4 py-1' : 'text-secondary hover:scale-110' }} transition-all duration-200" href="{{ route('visitor.news') }}">
-        <span class="material-symbols-outlined">newspaper</span>
-        <span class="text-[10px] font-label-bold">Berita</span>
+    <a class="flex flex-col items-center justify-center {{ request()->routeIs('visitor.locations') ? 'bg-primary-container text-on-primary-container rounded-full px-4 py-1' : 'text-secondary hover:scale-110' }} transition-all duration-200" href="{{ route('visitor.locations') }}">
+        <span class="material-symbols-outlined">map</span>
+        <span class="text-[10px] font-label-bold">Kegiatan</span>
     </a>
     <a class="flex flex-col items-center justify-center {{ request()->routeIs('visitor.competitions') ? 'bg-primary-container text-on-primary-container rounded-full px-4 py-1' : 'text-secondary hover:scale-110' }} transition-all duration-200" href="{{ route('visitor.competitions') }}">
         <span class="material-symbols-outlined">event_note</span>
         <span class="text-[10px] font-label-bold">Lomba</span>
     </a>
-    <a class="flex flex-col items-center justify-center {{ request()->routeIs('visitor.locations') ? 'bg-primary-container text-on-primary-container rounded-full px-4 py-1' : 'text-secondary hover:scale-110' }} transition-all duration-200" href="{{ route('visitor.locations') }}">
-        <span class="material-symbols-outlined">map</span>
-        <span class="text-[10px] font-label-bold">Kegiatan</span>
-    </a>
     <a class="flex flex-col items-center justify-center {{ request()->routeIs('visitor.videos') ? 'bg-primary-container text-on-primary-container rounded-full px-4 py-1' : 'text-secondary hover:scale-110' }} transition-all duration-200" href="{{ route('visitor.videos') }}">
         <span class="material-symbols-outlined">play_circle</span>
         <span class="text-[10px] font-label-bold">Video</span>
+    </a>
+    <a class="flex flex-col items-center justify-center {{ request()->routeIs('visitor.news') ? 'bg-primary-container text-on-primary-container rounded-full px-4 py-1' : 'text-secondary hover:scale-110' }} transition-all duration-200" href="{{ route('visitor.news') }}">
+        <span class="material-symbols-outlined">newspaper</span>
+        <span class="text-[10px] font-label-bold">Berita</span>
     </a>
     <a class="flex flex-col items-center justify-center {{ request()->routeIs('visitor.live_streamings') ? 'bg-primary-container text-on-primary-container rounded-full px-4 py-1' : 'text-secondary hover:scale-110' }} transition-all duration-200" href="{{ route('visitor.live_streamings') }}">
         <div class="relative">
