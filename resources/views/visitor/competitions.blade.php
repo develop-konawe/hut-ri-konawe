@@ -67,10 +67,8 @@
                 </div>
                 
                 <div class="mt-4">
-                    @if ($registrationSetting->isRegistrationOpen() && $competition->is_open && (!$competition->registration_deadline || now()->isBefore($competition->registration_deadline)))
+                    @if ($registrationSetting->isRegistrationOpen() && $competition->is_open && (!$competition->registration_deadline || now()->isBefore($competition->registration_deadline)) && (!$competition->starts_at || now()->isBefore($competition->starts_at)))
                         <a class="block w-full bg-primary-container text-white text-center rounded-full px-5 py-3 font-bold transition-colors hover:opacity-90" href="{{ route('visitor.registration.competition', $competition) }}">Daftar Sekarang</a>
-                    @else
-                        <div class="block w-full bg-surface-container-high text-on-surface-variant text-center rounded-full px-5 py-3 font-bold">Pendaftaran Ditutup</div>
                     @endif
                 </div>
             </article>
@@ -170,7 +168,7 @@
         </div>
         <div class="p-6 border-t border-outline-variant/30 flex justify-end gap-3 bg-surface-container-lowest">
             <button onclick="closeEventModal('competition-modal-{{ $competition->id }}')" class="bg-surface-container-high px-6 py-2.5 rounded-full font-bold">Tutup</button>
-            @if ($registrationSetting->isRegistrationOpen() && $competition->is_open && (!$competition->registration_deadline || now()->isBefore($competition->registration_deadline)))
+            @if ($registrationSetting->isRegistrationOpen() && $competition->is_open && (!$competition->registration_deadline || now()->isBefore($competition->registration_deadline)) && (!$competition->starts_at || now()->isBefore($competition->starts_at)))
                 <a href="{{ route('visitor.registration.competition', $competition) }}" class="bg-primary hover:bg-primary-container text-white px-6 py-2.5 rounded-full font-bold shadow-md transition-colors flex items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">edit_document</span> Daftar Lomba
                 </a>

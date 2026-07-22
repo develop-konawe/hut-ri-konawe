@@ -23,7 +23,6 @@ class HomeController extends Controller
         $search = $request->input('search');
         
         $competitions = Competition::query()
-            ->where('is_open', true)
             ->when($search, function ($query, $search) {
                 $query->where('name', 'like', "%{$search}%");
             })
