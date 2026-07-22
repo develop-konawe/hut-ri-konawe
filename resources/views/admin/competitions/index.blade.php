@@ -6,13 +6,21 @@
 @section('content')
 <div class="flex items-center justify-between mb-6">
     <p class="text-on-surface-variant">Kelola jadwal lomba seni, olahraga, dan pendaftaran peserta.</p>
-    <a class="bg-primary-container text-white px-5 py-3 rounded-full font-bold shadow" href="{{ route('admin.competitions.create') }}">Buat Lomba</a>
+    <div class="flex gap-2">
+        <form id="bulkDeleteForm" action="{{ route('admin.competitions.bulk-destroy') }}" method="POST" class="hidden">
+            @csrf
+            @method('DELETE')
+        </form>
+        <button type="button" id="bulkDeleteBtn" class="bg-red-100 text-red-700 px-5 py-3 rounded-full font-bold shadow hidden hover:bg-red-600 hover:text-white transition-colors" onclick="submitBulkDelete()">Hapus Terpilih</button>
+        <a class="bg-primary-container text-white px-5 py-3 rounded-full font-bold shadow" href="{{ route('admin.competitions.create') }}">Buat Lomba</a>
+    </div>
 </div>
 
 <div class="glass-panel rounded-[2rem] p-6 overflow-x-auto">
     <table class="w-full text-left">
         <thead class="text-sm text-on-surface-variant">
         <tr>
+            <th class="py-3 pl-6 pr-2 w-12"><input type="checkbox" id="selectAll" class="rounded border-outline-variant/50 text-primary shadow-sm focus:ring-primary w-4 h-4 cursor-pointer"></th>
             <th class="py-3 w-[25%] pr-4">Nama Lomba & Lokasi</th>
             <th class="py-3">Kategori</th>
             <th class="py-3 whitespace-nowrap">Hari/Tanggal</th>
@@ -25,6 +33,7 @@
         <tbody class="divide-y divide-surface-variant">
         @foreach ($competitions as $competition)
             <tr>
+                <td class="py-4 pl-6 pr-2"><input type="checkbox" value="{{ $competition->id }}" class="row-checkbox rounded border-outline-variant/50 text-primary shadow-sm focus:ring-primary w-4 h-4 cursor-pointer"></td>
                 <td class="py-4 pr-4 whitespace-normal break-words">
                     <div class="font-semibold">{{ $competition->name }}</div>
                     <div class="text-sm text-on-surface-variant mt-1 flex items-start gap-1">
@@ -107,5 +116,53 @@
             }
         });
     });
+
+    const selectAll = document.getElementById('selectAll');
+    const rowCheckboxes = document.querySelectorAll('.row-checkbox');
+    const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+    
+    function updateBulkDeleteBtn() {
+        const checkedCount = document.querySelectorAll('.row-checkbox:checked').length;
+        if (checkedCount > 0) {
+            bulkDeleteBtn.classList.remove('hidden');
+            bulkDeleteBtn.innerText = `Hapus Terpilih (${checkedCount})`;
+        } else {
+            bulkDeleteBtn.classList.add('hidden');
+        }
+    }
+
+    if(selectAll) {
+        selectAll.addEventListener('change', function() {
+            rowCheckboxes.forEach(cb => cb.checked = this.checked);
+            updateBulkDeleteBtn();
+        });
+    }
+
+    rowCheckboxes.forEach(cb => {
+        cb.addEventListener('change', function() {
+            const allChecked = document.querySelectorAll('.row-checkbox:checked').length === rowCheckboxes.length;
+            selectAll.checked = allChecked;
+            updateBulkDeleteBtn();
+        });
+    });
+
+    function submitBulkDelete() {
+        const checkedBoxes = document.querySelectorAll('.row-checkbox:checked');
+        if (!confirm('Hapus ' + checkedBoxes.length + ' data terpilih?')) return;
+        
+        const form = document.getElementById('bulkDeleteForm');
+        form.querySelectorAll('.dynamic-id').forEach(el => el.remove());
+        
+        checkedBoxes.forEach(cb => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'ids[]';
+            input.value = cb.value;
+            input.className = 'dynamic-id';
+            form.appendChild(input);
+        });
+        
+        form.submit();
+    }
 </script>
 @endsection

@@ -67,6 +67,19 @@ class CompetitionController extends Controller
         return to_route('admin.competitions.index', ['page' => $request->query('page')])->with('status', 'Jadwal lomba berhasil diperbarui.');
     }
 
+    public function bulkDestroy(Request $request): \Illuminate\Http\RedirectResponse
+    {
+        $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['required', 'exists:competitions,id'],
+        ]);
+
+        Competition::query()->whereIn('id', $request->input('ids'))->delete();
+
+        return redirect()->back()
+            ->with('success', count($request->input('ids')) . ' lomba berhasil dihapus.');
+    }
+
     /**
      * Update the status of the specified resource.
      */

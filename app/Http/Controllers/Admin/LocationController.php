@@ -66,6 +66,19 @@ class LocationController extends Controller
         return to_route('admin.locations.index', ['page' => $request->query('page')])->with('status', 'Lokasi kegiatan berhasil diperbarui.');
     }
 
+    public function bulkDestroy(Request $request): \Illuminate\Http\RedirectResponse
+    {
+        $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['required', 'exists:activity_locations,id'],
+        ]);
+
+        ActivityLocation::query()->whereIn('id', $request->input('ids'))->delete();
+
+        return redirect()->back()
+            ->with('status', count($request->input('ids')) . ' lokasi kegiatan berhasil dihapus.');
+    }
+
     /**
      * Remove the specified resource from storage.
      */

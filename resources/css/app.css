@@ -20,11 +20,41 @@
     --color-surface-container-low: #f3f4f5;
     --color-surface-container-lowest: #ffffff;
     --color-surface-container-high: #e7e8e9;
+    --color-surface-container-highest: #e1e3e4;
     --color-surface-variant: #e1e3e4;
     --color-outline-variant: #e7bdb8;
+    --color-on-background: #191c1d;
     --color-on-surface: #191c1d;
     --color-on-surface-variant: #5d3f3c;
-    
+    --color-on-primary-container: #ffffff;
+
+    --spacing-container-max: 1280px;
+    --spacing-gutter: 1.5rem;
+    --spacing-section-gap: 8rem;
+
     --font-body: 'Inter', sans-serif;
     --font-headline: 'Montserrat', sans-serif;
+    --font-body-md: 'Inter', sans-serif;
+    --font-headline-md: 'Montserrat', sans-serif;
+    --font-label-bold: 'Inter', sans-serif;
+
+    --shadow-elevation: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+@utility text-body-md {
+    font-size: 16px;
+    line-height: 1.6;
+    font-weight: 400;
+}
+
+@utility text-headline-md {
+    font-size: 24px;
+    line-height: 1.3;
+    font-weight: 600;
+}
+
+@utility text-label-bold {
+    font-size: 14px;
+    line-height: 1.2;
+    font-weight: 600;
 }

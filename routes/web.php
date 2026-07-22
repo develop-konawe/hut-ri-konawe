@@ -65,6 +65,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function (): v
     Route::middleware([IsAdmin::class])->group(function (): void {
         Route::resource('banners', BannerController::class);
         
+        Route::delete('locations/bulk', [LocationController::class, 'bulkDestroy'])->name('locations.bulk-destroy');
         Route::resource('locations', LocationController::class);
         Route::get('locations/{location}/registrations', [AdminActivityRegistrationController::class, 'index'])->name('locations.registrations.index');
         Route::patch('activity_registrations/{registration}/status', [AdminActivityRegistrationController::class, 'updateStatus'])->name('activity_registrations.status');
@@ -77,6 +78,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function (): v
     // Super Admin Only Routes
     Route::middleware([IsSuperAdmin::class])->group(function (): void {
         Route::resource('users', UserController::class)->except(['show']);
+        Route::delete('competitions/bulk', [CompetitionController::class, 'bulkDestroy'])->name('competitions.bulk-destroy');
         Route::resource('competitions', CompetitionController::class);
         Route::patch('competitions/{competition}/status', [CompetitionController::class, 'updateStatus'])->name('competitions.status');
         Route::get('settings', [SettingController::class, 'edit'])->name('settings.edit');
