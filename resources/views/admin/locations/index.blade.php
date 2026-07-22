@@ -13,18 +13,30 @@
     <table class="w-full text-left">
         <thead class="text-sm text-on-surface-variant">
         <tr>
-            <th class="py-3">Nama</th>
+            <th class="py-3 w-[30%] pr-4">Nama Kegiatan & Lokasi</th>
             <th class="py-3">Tipe</th>
-            <th class="py-3">Alamat</th>
+            <th class="py-3 whitespace-nowrap">Jadwal</th>
             <th class="py-3"></th>
         </tr>
         </thead>
         <tbody class="divide-y divide-surface-variant">
         @foreach ($locations as $location)
             <tr>
-                <td class="py-4 font-semibold">{{ $location->name }}</td>
+                <td class="py-4 pr-4 whitespace-normal break-words">
+                    <div class="font-semibold">{{ $location->name }}</div>
+                    <div class="text-sm text-on-surface-variant mt-1 flex items-start gap-1">
+                        <span class="material-symbols-outlined text-[16px]">location_on</span>
+                        <span>{{ $location->address }}</span>
+                    </div>
+                </td>
                 <td class="py-4">{{ $location->type }}</td>
-                <td class="py-4">{{ $location->address }}</td>
+                <td class="py-4 whitespace-nowrap">
+                    @if($location->activity_at)
+                        {{ $location->activity_at->format('d/m/Y H:i') }} WITA
+                    @else
+                        <span class="text-on-surface-variant italic">Menyusul</span>
+                    @endif
+                </td>
                 <td class="py-4">
                     <div class="flex gap-3 justify-end items-center">
                         @if($location->is_registration_open || $location->registrations()->count() > 0)
