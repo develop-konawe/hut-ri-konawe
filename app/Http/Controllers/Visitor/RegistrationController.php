@@ -19,7 +19,7 @@ class RegistrationController extends Controller
 
         return view('visitor.registration', [
             'competition' => $competition,
-            'competitions' => Competition::query()->where('is_open', true)->orderBy('starts_at')->get(),
+            'competitions' => Competition::query()->where('is_open', true)->orderByRaw('CASE WHEN starts_at >= ? THEN 0 ELSE 1 END', [now()->startOfDay()])->orderBy('starts_at')->get(),
         ]);
     }
 

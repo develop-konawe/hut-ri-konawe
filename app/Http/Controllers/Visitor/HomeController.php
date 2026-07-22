@@ -20,14 +20,14 @@ class HomeController extends Controller
     public function competitions(): View
     {
         return view('visitor.competitions', [
-            'competitions' => Competition::query()->where('is_open', true)->orderBy('starts_at')->paginate(12),
+            'competitions' => Competition::query()->where('is_open', true)->orderByRaw('CASE WHEN starts_at >= ? THEN 0 ELSE 1 END', [now()->startOfDay()])->orderBy('starts_at')->paginate(12),
         ]);
     }
 
     public function locations(): View
     {
         return view('visitor.locations', [
-            'locations' => ActivityLocation::query()->orderBy('activity_at')->get(),
+            'locations' => ActivityLocation::query()->orderByRaw('CASE WHEN activity_at >= ? THEN 0 ELSE 1 END', [now()->startOfDay()])->orderBy('activity_at')->get(),
         ]);
     }
 
