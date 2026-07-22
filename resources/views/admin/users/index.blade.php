@@ -41,15 +41,21 @@
                         <span class="text-red-500 italic">Belum ditentukan</span>
                     @endif
                 </td>
-                <td class="py-4 flex gap-3 justify-end items-center">
-                    <a class="text-primary font-bold hover:underline" href="{{ route('admin.users.edit', $user) }}">Edit</a>
-                    @if($user->id !== auth()->id())
-                    <form method="POST" action="{{ route('admin.users.destroy', $user) }}" onsubmit="return confirm('Hapus akun pengguna ini?')">
-                        @csrf
-                        @method('DELETE')
-                        <button class="text-on-surface-variant font-bold hover:text-red-500">Hapus</button>
-                    </form>
-                    @endif
+                <td class="py-4">
+                    <div class="flex gap-3 justify-end items-center">
+                        <a class="inline-flex items-center justify-center bg-blue-100 text-blue-700 h-9 w-9 rounded-full hover:bg-blue-600 hover:text-white transition-colors" title="Edit Pengguna" href="{{ route('admin.users.edit', $user) }}">
+                            <span class="material-symbols-outlined text-[18px]">edit</span>
+                        </a>
+                        @if($user->id !== auth()->id())
+                        <form method="POST" action="{{ route('admin.users.destroy', $user) }}" onsubmit="return confirm('Hapus akun pengguna ini?')" class="m-0 p-0 inline-flex">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="inline-flex items-center justify-center bg-red-100 text-red-700 h-9 w-9 rounded-full hover:bg-red-600 hover:text-white transition-colors" title="Hapus Pengguna">
+                                <span class="material-symbols-outlined text-[18px]">delete</span>
+                            </button>
+                        </form>
+                        @endif
+                    </div>
                 </td>
             </tr>
         @endforeach

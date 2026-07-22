@@ -25,18 +25,25 @@
                 <td class="py-4 font-semibold">{{ $location->name }}</td>
                 <td class="py-4">{{ $location->type }}</td>
                 <td class="py-4">{{ $location->address }}</td>
-                <td class="py-4 flex gap-3 justify-end items-center">
-                    @if($location->is_registration_open || $location->registrations()->count() > 0)
-                        <a class="text-secondary hover:text-primary font-bold flex items-center gap-1 text-sm" href="{{ route('admin.locations.registrations.index', $location) }}">
-                            <span class="material-symbols-outlined text-[18px]">group</span> Pendaftar ({{ $location->registrations()->count() }})
+                <td class="py-4">
+                    <div class="flex gap-3 justify-end items-center">
+                        @if($location->is_registration_open || $location->registrations()->count() > 0)
+                            <a class="inline-flex items-center justify-center bg-secondary-container text-secondary h-9 w-9 rounded-full hover:bg-primary hover:text-white transition-colors relative" title="Pendaftar" href="{{ route('admin.locations.registrations.index', $location) }}">
+                                <span class="material-symbols-outlined text-[18px]">group</span>
+                                <span class="absolute -top-1 -right-1 bg-primary text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">{{ $location->registrations()->count() }}</span>
+                            </a>
+                        @endif
+                        <a class="inline-flex items-center justify-center bg-blue-100 text-blue-700 h-9 w-9 rounded-full hover:bg-blue-600 hover:text-white transition-colors" title="Edit Kegiatan" href="{{ route('admin.locations.edit', ['location' => $location, 'page' => request('page')]) }}">
+                            <span class="material-symbols-outlined text-[18px]">edit</span>
                         </a>
-                    @endif
-                    <a class="text-primary font-bold" href="{{ route('admin.locations.edit', ['location' => $location, 'page' => request('page')]) }}">Edit</a>
-                    <form method="POST" action="{{ route('admin.locations.destroy', $location) }}" onsubmit="return confirm('Hapus lokasi ini?')">
-                        @csrf
-                        @method('DELETE')
-                        <button class="text-on-surface-variant font-bold">Hapus</button>
-                    </form>
+                        <form method="POST" action="{{ route('admin.locations.destroy', $location) }}" onsubmit="return confirm('Hapus lokasi ini?')" class="m-0 p-0 inline-flex">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="inline-flex items-center justify-center bg-red-100 text-red-700 h-9 w-9 rounded-full hover:bg-red-600 hover:text-white transition-colors" title="Hapus Kegiatan">
+                                <span class="material-symbols-outlined text-[18px]">delete</span>
+                            </button>
+                        </form>
+                    </div>
                 </td>
             </tr>
         @endforeach

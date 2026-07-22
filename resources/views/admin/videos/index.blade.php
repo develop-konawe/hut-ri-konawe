@@ -34,13 +34,19 @@
                         {{ $video->is_featured ? 'Unggulan' : 'Reguler' }}
                     </span>
                 </td>
-                <td class="py-4 flex gap-3 justify-end">
-                    <a class="text-primary font-bold" href="{{ route('admin.videos.edit', $video) }}">Edit</a>
-                    <form method="POST" action="{{ route('admin.videos.destroy', $video) }}" onsubmit="return confirm('Hapus video ini?')">
-                        @csrf
-                        @method('DELETE')
-                        <button class="text-on-surface-variant font-bold">Hapus</button>
-                    </form>
+                <td class="py-4">
+                    <div class="flex gap-3 justify-end items-center">
+                        <a class="inline-flex items-center justify-center bg-blue-100 text-blue-700 h-9 w-9 rounded-full hover:bg-blue-600 hover:text-white transition-colors" title="Edit Video" href="{{ route('admin.videos.edit', $video) }}">
+                            <span class="material-symbols-outlined text-[18px]">edit</span>
+                        </a>
+                        <form method="POST" action="{{ route('admin.videos.destroy', $video) }}" onsubmit="return confirm('Hapus video ini?')" class="m-0 p-0 inline-flex">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="inline-flex items-center justify-center bg-red-100 text-red-700 h-9 w-9 rounded-full hover:bg-red-600 hover:text-white transition-colors" title="Hapus Video">
+                                <span class="material-symbols-outlined text-[18px]">delete</span>
+                            </button>
+                        </form>
+                    </div>
                 </td>
             </tr>
         @empty
