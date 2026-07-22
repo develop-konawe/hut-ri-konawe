@@ -14,7 +14,7 @@
         <thead class="text-sm text-on-surface-variant">
         <tr>
             <th class="py-3 w-[30%] pr-4">Nama Kegiatan & Lokasi</th>
-            <th class="py-3">Tipe</th>
+            <th class="py-3 pr-4">Tipe</th>
             <th class="py-3 whitespace-nowrap">Jadwal</th>
             <th class="py-3"></th>
         </tr>
@@ -29,7 +29,7 @@
                         <span>{{ $location->address }}</span>
                     </div>
                 </td>
-                <td class="py-4">{{ $location->type }}</td>
+                <td class="py-4 pr-4"><span class="px-3 py-1 rounded-full bg-secondary-container text-secondary text-xs font-bold uppercase">{{ $location->type }}</span></td>
                 <td class="py-4 whitespace-nowrap">
                     @if($location->activity_at)
                         {{ $location->activity_at->format('d/m/Y H:i') }} WITA

@@ -32,7 +32,7 @@
                         <span>{{ $competition->venue }}</span>
                     </div>
                 </td>
-                <td class="py-4">{{ $competition->category }}</td>
+                <td class="py-4"><span class="px-3 py-1 rounded-full bg-secondary-container text-secondary text-xs font-bold uppercase">{{ $competition->category }}</span></td>
                 <td class="py-4 whitespace-nowrap">{{ $competition->getAdminDateText() }}</td>
                 <td class="py-4 whitespace-nowrap">{{ $competition->getAdminTimeText() }}</td>
                 <td class="py-4">
