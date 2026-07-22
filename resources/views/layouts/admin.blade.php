@@ -4,12 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'HUT RI ke-81 Kabupaten Konawe Admin')</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="icon" type="image/png" href="{{ asset('assets/logo/logo_konawe.png') }}">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <script>
-        tailwind.config = {theme:{extend:{colors:{primary:'#be0017','primary-container':'#e62129',secondary:'#515d84','secondary-container':'#c4d0fd',surface:'#f8f9fa','surface-container':'#edeeef','surface-container-low':'#f3f4f5','surface-container-high':'#e7e8e9','surface-variant':'#e1e3e4','on-surface':'#191c1d','on-surface-variant':'#5d3f3c'},fontFamily:{body:['Inter'],headline:['Montserrat']}}}}
-    </script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script>
         if (localStorage.getItem('adminSidebarCollapsed') === 'true') {
             document.documentElement.classList.add('admin-sidebar-collapsed-initial');

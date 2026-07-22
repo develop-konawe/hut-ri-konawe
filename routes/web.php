@@ -83,3 +83,8 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function (): v
         Route::put('settings', [SettingController::class, 'update'])->name('settings.update');
     });
 });
+
+Route::get('/storage-link', function () {
+    \Illuminate\Support\Facades\Artisan::call('storage:link');
+    return 'Storage link created successfully.';
+});

@@ -4,31 +4,10 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Login Admin Konawe 81</title>
+    <link rel="icon" type="image/png" href="{{ asset('assets/logo/logo_konawe.png') }}">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#be0017',
-                        'primary-container': '#e62129',
-                        secondary: '#515d84',
-                        background: '#f8f9fa',
-                        surface: '#f8f9fa',
-                        'outline-variant': '#e7bdb8',
-                        'on-surface': '#191c1d',
-                        'on-surface-variant': '#5d3f3c',
-                    },
-                    fontFamily: {
-                        body: ['Inter'],
-                        headline: ['Montserrat'],
-                    },
-                },
-            },
-        }
-    </script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         @keyframes drift {
             0% { background-position: 0% 50%; }

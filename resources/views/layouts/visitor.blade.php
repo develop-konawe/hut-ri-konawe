@@ -4,48 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'HUT RI ke-81 Kabupaten Konawe')</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="icon" type="image/png" href="{{ asset('assets/logo/logo_konawe.png') }}">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#be0017',
-                        'primary-container': '#e62129',
-                        secondary: '#515d84',
-                        'secondary-container': '#c4d0fd',
-                        tertiary: '#735c00',
-                        'tertiary-container': '#cca730',
-                        background: '#f8f9fa',
-                        surface: '#f8f9fa',
-                        'surface-container': '#edeeef',
-                        'surface-container-low': '#f3f4f5',
-                        'surface-container-lowest': '#ffffff',
-                        'surface-container-high': '#e7e8e9',
-                        'surface-container-highest': '#e1e3e4',
-                        'outline-variant': '#e7bdb8',
-                        'on-background': '#191c1d',
-                        'on-surface-variant': '#5d3f3c',
-                        'on-primary-container': '#ffffff',
-                    },
-                    spacing: {'container-max': '1280px', gutter: '1.5rem', 'section-gap': '8rem'},
-                    fontFamily: {
-                        body: ['Inter'],
-                        headline: ['Montserrat'],
-                        'body-md': ['Inter'],
-                        'headline-md': ['Montserrat'],
-                        'label-bold': ['Inter'],
-                    },
-                    fontSize: {
-                        'body-md': ['16px', {lineHeight: '1.6', fontWeight: '400'}],
-                        'headline-md': ['24px', {lineHeight: '1.3', fontWeight: '600'}],
-                        'label-bold': ['14px', {lineHeight: '1.2', fontWeight: '600'}],
-                    },
-                },
-            },
-        }
-    </script>
     <style>
         @keyframes float {
             0%, 100% { transform: translateY(0); }
