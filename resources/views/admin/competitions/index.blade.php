@@ -13,10 +13,10 @@
     <table class="w-full text-left">
         <thead class="text-sm text-on-surface-variant">
         <tr>
-            <th class="py-3 w-[25%] pr-4">Nama</th>
+            <th class="py-3 w-[25%] pr-4">Nama Lomba & Lokasi</th>
             <th class="py-3">Kategori</th>
-            <th class="py-3">Jadwal</th>
-            <th class="py-3">Lokasi</th>
+            <th class="py-3 whitespace-nowrap">Hari/Tanggal</th>
+            <th class="py-3 whitespace-nowrap">Waktu</th>
             <th class="py-3">Peserta</th>
             <th class="py-3">Status</th>
             <th class="py-3"></th>
@@ -25,13 +25,16 @@
         <tbody class="divide-y divide-surface-variant">
         @foreach ($competitions as $competition)
             <tr>
-                <td class="py-4 font-semibold pr-4 whitespace-normal break-words">{{ $competition->name }}</td>
-                <td class="py-4">{{ $competition->category }}</td>
-                <td class="py-4">
-                    {{ $competition->starts_at->format('d/m/Y H:i') }} WITA - 
-                    {{ $competition->ends_at ? $competition->ends_at->format('H:i') . ' WITA' : 'Selesai' }}
+                <td class="py-4 pr-4 whitespace-normal break-words">
+                    <div class="font-semibold">{{ $competition->name }}</div>
+                    <div class="text-sm text-on-surface-variant mt-1 flex items-start gap-1">
+                        <span class="material-symbols-outlined text-[16px]">location_on</span>
+                        <span>{{ $competition->venue }}</span>
+                    </div>
                 </td>
-                <td class="py-4">{{ $competition->venue }}</td>
+                <td class="py-4">{{ $competition->category }}</td>
+                <td class="py-4 whitespace-nowrap">{{ $competition->getAdminDateText() }}</td>
+                <td class="py-4 whitespace-nowrap">{{ $competition->getAdminTimeText() }}</td>
                 <td class="py-4">
                     <a class="font-bold text-primary" href="{{ route('admin.registrations.index', ['competition_id' => $competition->id]) }}">
                         {{ $competition->registrations_count }}

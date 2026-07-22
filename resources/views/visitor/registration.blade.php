@@ -29,8 +29,21 @@
                         <div class="space-y-3">
                             @foreach ($competitions as $item)
                                 <a class="block rounded-2xl bg-white/70 p-4 hover:ring-2 hover:ring-primary" href="{{ route('visitor.registration.competition', $item) }}">
-                                    <strong>{{ $item->name }}</strong>
-                                    <span class="block text-sm text-on-surface-variant">{{ $item->starts_at->translatedFormat('d M Y H:i') }} - {{ $item->venue }}</span>
+                                    <div class="text-left space-y-1">
+                                        <span class="block font-bold text-base text-on-surface-variant group-has-[:checked]:text-primary mb-1">{{ $item->name }}</span>
+                                        <div class="text-sm text-on-surface-variant flex items-start gap-1">
+                                            <span class="material-symbols-outlined text-[16px] mt-0.5">event</span>
+                                            <span>{{ $item->getDateText() }}</span>
+                                        </div>
+                                        <div class="text-sm text-on-surface-variant flex items-start gap-1">
+                                            <span class="material-symbols-outlined text-[16px] mt-0.5">schedule</span>
+                                            <span>{{ $item->getTimeText() }}</span>
+                                        </div>
+                                        <div class="text-sm text-on-surface-variant flex items-start gap-1">
+                                            <span class="material-symbols-outlined text-[16px] mt-0.5">location_on</span>
+                                            <span>{{ $item->venue }}</span>
+                                        </div>
+                                    </div>
                                 </a>
                             @endforeach
                         </div>

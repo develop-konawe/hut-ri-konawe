@@ -104,7 +104,8 @@ class CompetitionController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'category' => ['required', 'in:olahraga,seni,umum'],
             'description' => ['nullable', 'string'],
-            'event_date' => ['required', 'date'],
+            'start_date' => ['required', 'date'],
+            'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
             'start_time' => ['required', 'date_format:H:i'],
             'end_time' => ['nullable', 'date_format:H:i'],
             'registration_deadline' => ['nullable', 'date'],
@@ -113,15 +114,26 @@ class CompetitionController extends Controller
             'is_open' => ['nullable', 'boolean'],
             'latitude' => ['nullable', 'numeric'],
             'longitude' => ['nullable', 'numeric'],
+        ], [
+            'end_date.after_or_equal' => 'Tanggal selesai tidak boleh lebih awal dari tanggal mulai.',
         ]);
 
         $data['slug'] = $competition?->slug ?: Str::slug($data['name']).'-'.Str::lower(Str::random(5));
         $data['is_open'] = $request->boolean('is_open');
         
-        $data['starts_at'] = $data['event_date'] . ' ' . $data['start_time'] . ':00';
-        $data['ends_at'] = !empty($data['end_time']) ? $data['event_date'] . ' ' . $data['end_time'] . ':00' : null;
+        $data['starts_at'] = $data['start_date'] . ' ' . $data['start_time'] . ':00';
+        
+        if (!empty($data['end_date']) && !empty($data['end_time'])) {
+            $data['ends_at'] = $data['end_date'] . ' ' . $data['end_time'] . ':00';
+        } elseif (!empty($data['end_date'])) {
+            $data['ends_at'] = $data['end_date'] . ' 23:59:59';
+        } elseif (!empty($data['end_time'])) {
+            $data['ends_at'] = $data['start_date'] . ' ' . $data['end_time'] . ':00';
+        } else {
+            $data['ends_at'] = null;
+        }
 
-        unset($data['event_date'], $data['start_time'], $data['end_time']);
+        unset($data['start_date'], $data['end_date'], $data['start_time'], $data['end_time']);
 
         return $data;
     }

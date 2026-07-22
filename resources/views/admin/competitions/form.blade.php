@@ -27,10 +27,17 @@
             <label class="font-bold text-sm">Kuota</label>
             <input type="number" min="1" name="quota" value="{{ old('quota', $competition->quota) }}" class="mt-2 w-full rounded-xl border-surface-variant">
         </div>
-        <div>
-            <label class="font-bold text-sm">Tanggal Lomba <span class="text-red-500">*</span></label>
-            <input type="date" name="event_date" value="{{ old('event_date', $competition->starts_at?->format('Y-m-d')) }}" class="mt-2 w-full rounded-xl border-surface-variant" required>
-            @error('event_date') <p class="text-primary text-sm mt-1">{{ $message }}</p> @enderror
+        <div class="grid grid-cols-2 gap-3">
+            <div>
+                <label class="font-bold text-sm">Tanggal Mulai <span class="text-red-500">*</span></label>
+                <input type="date" name="start_date" value="{{ old('start_date', $competition->starts_at?->format('Y-m-d')) }}" class="mt-2 w-full rounded-xl border-surface-variant" required>
+                @error('start_date') <p class="text-primary text-sm mt-1">{{ $message }}</p> @enderror
+            </div>
+            <div>
+                <label class="font-bold text-sm">Tanggal Selesai <span class="text-xs font-normal text-on-surface-variant">(Ops)</span></label>
+                <input type="date" name="end_date" value="{{ old('end_date', $competition->ends_at?->format('Y-m-d')) }}" class="mt-2 w-full rounded-xl border-surface-variant">
+                @error('end_date') <p class="text-primary text-sm mt-1">{{ $message }}</p> @enderror
+            </div>
         </div>
         <div class="grid grid-cols-2 gap-3">
             <div>
@@ -40,7 +47,7 @@
             </div>
             <div>
                 <label class="font-bold text-sm">Waktu Selesai <span class="text-xs font-normal text-on-surface-variant">(Ops)</span></label>
-                <input type="time" name="end_time" value="{{ old('end_time', $competition->ends_at?->format('H:i')) }}" class="mt-2 w-full rounded-xl border-surface-variant">
+                <input type="time" name="end_time" value="{{ old('end_time', $competition->ends_at && $competition->ends_at->format('H:i:s') !== '23:59:59' ? $competition->ends_at->format('H:i') : '') }}" class="mt-2 w-full rounded-xl border-surface-variant">
                 @error('end_time') <p class="text-primary text-sm mt-1">{{ $message }}</p> @enderror
             </div>
         </div>

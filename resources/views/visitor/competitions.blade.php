@@ -32,13 +32,12 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @foreach ($competitions as $competition)
-            <article class="glass-panel rounded-[2rem] p-6 flex flex-col">
+            <article class="glass-panel rounded-[2rem] p-6 flex flex-col h-full">
                 <span class="px-3 py-1 rounded-full bg-secondary-container text-secondary text-xs font-bold self-start">{{ strtoupper($competition->category) }}</span>
                 <h2 class="font-headline text-2xl font-bold mt-4">{{ $competition->name }}</h2>
                 <p class="text-on-surface-variant mt-2 flex-grow">{{ Str::limit($competition->description, 120) }}</p>
                 <div class="mt-5 text-sm space-y-2">
-                    <p class="flex items-center gap-2"><span class="material-symbols-outlined text-[18px] text-primary">event</span> {{ $competition->starts_at->translatedFormat('d F Y H:i') }} WITA - {{ $competition->ends_at ? $competition->ends_at->format('H:i') . ' WITA' : 'Selesai' }}</p>
-                    <p class="flex items-center gap-2"><span class="material-symbols-outlined text-[18px] text-primary">location_on</span> {{ $competition->venue }}</p>
+                    <p class="flex items-start gap-2"><span class="material-symbols-outlined text-[18px] text-primary mt-0.5">event</span> <span>{{ $competition->getDateText() }}</span></p>
                 </div>
                 <div class="mt-4 pt-4 border-t border-outline-variant/30 flex justify-between items-center">
                     <button type="button" onclick="openEventModal('competition-modal-{{ $competition->id }}')" class="text-primary font-bold text-sm flex items-center gap-1 hover:text-primary-container transition-colors">
@@ -84,11 +83,15 @@
                     <span class="block text-on-surface-variant font-bold mb-1">Kategori</span>
                     <span class="inline-block px-3 py-1 bg-secondary-container text-secondary font-bold rounded-full text-xs uppercase">{{ $competition->category }}</span>
                 </div>
-                <div>
+                <div class="sm:col-span-2 space-y-2">
                     <span class="block text-on-surface-variant font-bold mb-1">Waktu Pelaksanaan</span>
-                    <span class="flex items-center gap-1">
-                        <span class="material-symbols-outlined text-[16px]">event</span> 
-                        {{ $competition->starts_at ? $competition->starts_at->translatedFormat('d F Y H:i') . ' WITA - ' . ($competition->ends_at ? $competition->ends_at->format('H:i') . ' WITA' : 'Selesai') : 'Menyusul' }}
+                    <span class="flex items-start gap-1">
+                        <span class="material-symbols-outlined text-[16px] mt-0.5">event</span> 
+                        <span>{{ $competition->getDateText() }}</span>
+                    </span>
+                    <span class="flex items-start gap-1">
+                        <span class="material-symbols-outlined text-[16px] mt-0.5">schedule</span> 
+                        <span>{{ $competition->getTimeText() }}</span>
                     </span>
                 </div>
                 <div class="sm:col-span-2">
